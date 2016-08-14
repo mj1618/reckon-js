@@ -140,6 +140,91 @@ describe('Fabric Select API',function(){
             
         });
         
+        it('should not fire update on select object same',function(done){
+            
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let fruitSelect = fabric.select('fruits');
+            
+            fruitSelect.onUpdate(data=>{
+                throw 'Update should not have been called as data has not changed: '+data;
+            });
+            
+            fruitSelect.update(data=>{
+                return data;
+            }).then(()=>{
+                setTimeout(done,100);
+            });
+            
+        });
+        
+        it('should not fire update on select object same',function(done){
+            
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let fruitSelect = fabric.select('fruits');
+            let rootSelect = fabric.select();
+            
+            fruitSelect.onUpdate(data=>{
+                throw 'Update should not have been called as data has not changed: '+data;
+            });
+            
+            rootSelect.update(data=>{
+                return data.merge({
+                    veges:[]
+                });
+            }).then(()=>{
+                setTimeout(done,100);
+            });
+            
+        });
+        
+        it('should not fire update on select object same',function(done){
+            
+            let fabric = new Fabric({
+                fruits: [
+                    {name:'apple'},
+                    {name:'pear'}
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let fruitsSelect = fabric.select('fruits');
+            let fruitSelect = fabric.select('fruits[0]');
+            
+            fruitSelect.onUpdate(data=>{
+                throw 'Update should not have been called as data has not changed: '+data;
+            });
+            
+            fruitsSelect.update(data=>{
+                return data.map(f=>f.name==='pear'?{name:'orange'}:f);
+            }).then(()=>{
+                console.log(fruitsSelect.get());
+                setTimeout(done,100);
+            });
+        });
+        
         
         it('should fire update on root object change',function(done){
             

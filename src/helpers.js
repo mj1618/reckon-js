@@ -40,5 +40,6 @@ export function isRelativeEqual(a,b){
             return false;
         }
     }
-    return _.isEqual(relativeData(a.data,a.path,b.path),b.data);
+    let aData = relativeData(a.data,a.path,b.path);
+    return aData===b.data;
 }

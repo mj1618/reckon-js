@@ -47,13 +47,14 @@ class Fabric extends EventEmitter {
         });
     }
     
-    _get(path){
+    _get(path=[]){
         if(path && path.length>0){
             return _.get(this._data,path);
         } else {
             return this._data;
         }
     }
+    
     _set(data,path=[]){
         let old = this._get(path);
         if(path && path.length>0){
