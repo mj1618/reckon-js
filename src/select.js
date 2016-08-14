@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {isSubPath,isRelativeEqual} from './helpers';
+import {isSubPath,isRelativeEqual,pathGet} from './helpers';
 
 export default class Select {
     

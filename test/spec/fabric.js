@@ -1,6 +1,6 @@
 import assert from 'assert';
 import Fabric from '../../src/fabric';
-import Immutable from 'seamless-immutable';
+import Immutable from 'immutable';
 describe('Fabric API', function() {
 
     describe('constructor', function() {
@@ -18,7 +18,7 @@ describe('Fabric API', function() {
                 ]
             });
             
-            assert(fabric._get().fruits[0] === 'apple', 'immutable data not initialised properly');
+            assert(fabric._getJS().fruits[0] === 'apple', 'immutable data not initialised properly');
             assert.throws(()=>fabric._get().fruits[0] = 'banana', 'not immutable');
             
         });
@@ -30,13 +30,13 @@ describe('Fabric API', function() {
                 fruit:'apple'
             });
             fabric.on('CHANGE_FRUIT',state=>{
-                assert(state.fruit == 'apple', 'wasnt passed state');
+                assert(state.get('fruit') == 'apple', 'wasnt passed state');
                 return {
                     fruit:'pear'
                 };
             });
             fabric.on(':updated',state=>{
-                assert(state.fruit=='pear','not updated');
+                assert(state.toJS().fruit=='pear','not updated');
                 done();
             });
             fabric.emit('CHANGE_FRUIT');

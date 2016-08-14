@@ -4,8 +4,8 @@
   "description": "JS Immutable State, Event and Action framework with cursors",
   "main": "./dist/state-fabric.js",
   "dependencies": {
-    "lodash": "^4.15.0",
-    "seamless-immutable": "^6.1.1"
+    "immutable": "^3.8.1",
+    "lodash": "^4.15.0"
   },
   "devDependencies": {
     "async": "^1.2.1",

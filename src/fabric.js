@@ -1,13 +1,14 @@
-import Immutable from 'seamless-immutable';
+import Immutable from 'immutable';
 import EventEmitter from 'events';
 import _ from 'lodash';
 import Select from './select';
+import {pathGet} from './helpers';
 
 class Fabric extends EventEmitter {
     
     constructor(data){
         super();
-        this._data = Immutable(data);
+        this._data = Immutable.fromJS(data);
         this._selects = {};
     }
     
@@ -49,10 +50,15 @@ class Fabric extends EventEmitter {
     
     _get(path=[]){
         if(path && path.length>0){
-            return _.get(this._data,path);
+            return pathGet(this._data,path);
         } else {
             return this._data;
         }
+    }
+    
+    
+    _getJS(path=[]){
+        return this._get(path).toJS();
     }
     
     _set(data,path=[]){
@@ -60,7 +66,7 @@ class Fabric extends EventEmitter {
         if(path && path.length>0){
             this._data = this._get().merge(_.set({},path,data));
         } else {
-            this._data = data;
+            this._data = Immutable.fromJS(data);
         }
         this.emit(':updated',{
             path:path,

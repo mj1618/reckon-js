@@ -22,12 +22,23 @@ export function pathDiff(from,to){
     }
 }
 
+export function pathGet(data,path){
+    try{
+        path.forEach(p=>{
+            data = data.get(p);
+        });
+        return data;
+    } catch(e) {
+        return null;
+    }
+}
+
 export function relativeData(data,from,to){
     let diff = pathDiff(from,to);
     if(!diff || diff.length==0){
         return data;
     } else {
-        return _.get(data,diff);
+        return pathGet(data,diff);
     }
 }
 

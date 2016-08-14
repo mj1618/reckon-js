@@ -1,6 +1,6 @@
 import assert from 'assert';
 import Fabric from '../../src/fabric';
-import Immutable from 'seamless-immutable';
+import Immutable from 'immutable';
 describe('Fabric Select API',function(){
     describe('data',function(){
         
@@ -75,10 +75,10 @@ describe('Fabric Select API',function(){
             });
             
             let fruitSelect = fabric.select('fruits');
-            assert(fruitSelect.get()[0]==='apple','select get() returned wrong data');
+            assert(fruitSelect.get().toJS()[0]==='apple','select get() returned wrong data');
             assert(fruitSelect.get('[0]')==='apple','select get() returned wrong data');
-            assert(fruitSelect.getRoot().fruits[0]==='apple','select get() returned wrong data');
-            assert(fruitSelect.getParent().fruits[0]==='apple','select get() returned wrong data');
+            assert(fruitSelect.getRoot().toJS().fruits[0]==='apple','select get() returned wrong data');
+            assert(fruitSelect.getParent().toJS().fruits[0]==='apple','select get() returned wrong data');
             
         });
         
@@ -220,7 +220,6 @@ describe('Fabric Select API',function(){
             fruitsSelect.update(data=>{
                 return data.map(f=>f.name==='pear'?{name:'orange'}:f);
             }).then(()=>{
-                console.log(fruitsSelect.get());
                 setTimeout(done,100);
             });
         });
@@ -248,7 +247,7 @@ describe('Fabric Select API',function(){
             });
             
             rootSelect.update((state)=>{
-                assert(state.fruits[0]==='apple','wasnt given proper state in update()');
+                assert(state.toJS().fruits[0]==='apple','wasnt given proper state in update()');
                 return {
                     fruits: [
                         'banana',
