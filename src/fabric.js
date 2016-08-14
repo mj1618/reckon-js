@@ -26,7 +26,7 @@ class Fabric extends EventEmitter {
     on(name, fn, path=[]){
         return new Promise((resolve,reject)=>{
             super.on(name,function(){
-                let newData = fn(this._get(path),arguments);
+                let newData = fn(this._get(path),...arguments);
                 if(newData){
                     this._set(newData,path);
                 }
@@ -38,7 +38,7 @@ class Fabric extends EventEmitter {
     once(name, fn, path=[]){
         return new Promise((resolve,reject)=>{
             super.once(name,function(){
-                let newData = fn(this._get(path),arguments);
+                let newData = fn(this._get(path),...arguments);
                 if(newData){
                     this._set(newData,path);
                 }
@@ -55,7 +55,7 @@ class Fabric extends EventEmitter {
         }
     }
     _set(data,path=[]){
-        let old = this._data;
+        let old = this._get(path);
         if(path && path.length>0){
             this._data = this._get().merge(_.set({},path,data));
         } else {

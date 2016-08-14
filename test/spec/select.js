@@ -111,6 +111,36 @@ describe('Fabric Select API',function(){
             
         });
         
+        
+        it('should not fire update on select object same',function(done){
+            
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let fruitSelect = fabric.select('fruits[0]');
+            
+            fruitSelect.onUpdate(data=>{
+                throw 'Update should not have been called as data has not changed: '+data;
+            });
+            
+            fruitSelect.update(data=>{
+                assert(data==='apple','wasnt given proper state in fruitSelect');
+                return 'apple';
+            }).then(()=>{
+                setTimeout(done,100);
+            });
+            
+        });
+        
+        
         it('should fire update on root object change',function(done){
             
             let fabric = new Fabric({

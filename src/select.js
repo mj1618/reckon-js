@@ -31,20 +31,23 @@ export default class Select {
     }
     
     onUpdate(fn){
-        this._fabric.on(':updated',(state,args) => {
-            let path = args.path;
-            let oldData = args.oldData;
-            if(
-                isSubPath(path,this._path) && 
-                !isRelativeEqual({
-                        path:path,
-                        data:oldData,
-                    },{
-                        path:this._path,
-                        data:this.get()
-                    })){
-                fn(this.get());
-            }
+        return new Promise((resolve,reject)=>{
+            this._fabric.on(':updated',(state,args) => {
+                let path = args.path;
+                let oldData = args.oldData;
+                if(
+                    isSubPath(path,this._path) && 
+                    !isRelativeEqual({
+                            path:path,
+                            data:oldData,
+                        },{
+                            path:this._path,
+                            data:this.get()
+                        })){
+                    fn(this.get());
+                    resolve();
+                }
+            });
         });
     }
 }

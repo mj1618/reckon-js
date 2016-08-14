@@ -23,7 +23,12 @@ export function pathDiff(from,to){
 }
 
 export function relativeData(data,from,to){
-    return _.get(data,pathDiff(from,to));
+    let diff = pathDiff(from,to);
+    if(!diff || diff.length==0){
+        return data;
+    } else {
+        return _.get(data,diff);
+    }
 }
 
 export function isRelativeEqual(a,b){
@@ -35,6 +40,5 @@ export function isRelativeEqual(a,b){
             return false;
         }
     }
-    
     return _.isEqual(relativeData(a.data,a.path,b.path),b.data);
 }
