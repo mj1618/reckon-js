@@ -1,0 +1,14 @@
+node_modules
+.DS_Store
+.gitignore
+.npmignore
+.travis.yml
+test/
+build/
+gulpfile.js
+benchmark.js
+*.log
+.eslintrc
+.babelrc
+TODO.md
+bower.json
