@@ -7,6 +7,7 @@ export default class Select {
         this._fabric=fabric;
         this._path=path;
         this.initFilters();
+        this.initPassThroughs();
     }
     initFilters(){
         this.FILTER_EXACT = path=>_.isEqual(path,this._path);
@@ -16,6 +17,11 @@ export default class Select {
         this.FILTER_ANY = ()=>true;
         this.FILTER_SUB_EXCLUSIVE = path=>isSubPath(this._path,path) && !_.isEqual(this._path,path);
         this.FILTER_SUPER_EXCLUSIVE = path=>isSubPath(path,this._path) && !_.isEqual(this._path,path);
+    }
+    initPassThroughs(){
+        [
+            
+        ]
     }
     
     get(path=[]){
@@ -35,38 +41,44 @@ export default class Select {
     }
     
     emit(name,data=null){
-        this._fabric._emit(name,data,this._path);
+        this._fabric.emit(name,data,this._path);
     }
     
     on(name,fn,filter=this.FILTER_EXACT){
-        return this._fabric._on(name,fn,filter);
+        return this._fabric.on(name,fn,filter);
     }
     
     before(name,fn,filter=this.FILTER_EXACT){
-        return this._fabric._before(name,fn,filter);
+        return this._fabric.before(name,fn,filter);
     }
     
     after(name,fn,filter=this.FILTER_EXACT){
-        return this._fabric._after(name,fn,filter);
+        return this._fabric.after(name,fn,filter);
     }
     
     off(name,fn,filter=this.FILTER_EXACT){
-        return this._fabric._off(name,fn,filter);
+        return this._fabric.off(name,fn,filter);
     }
     
     once(name,fn,filter=this.FILTER_EXACT){
-        return this._fabric._once(name,fn,filter);
+        return this._fabric.once(name,fn,filter);
+    }
+    clear(name){
+        return this._fabric.clear(name);
+    }
+    clearAll(){
+        return this._fabric.clearAll();
     }
     
     update(fn){
         this.once('λupdate',()=>{
             this._fabric._set(fn(this.get()),this._path);
         });
-        this._fabric._emit('λupdate',this.get(),this._path);
+        this._fabric.emit('λupdate',this.get(),this._path);
     }
     
     onUpdate(fn){
-        this._fabric._on('λupdated',(data) => {
+        this._fabric.on('λupdated',(data) => {
                 if(
                     isSubPath(data.path,this._path) &&
                     !isRelativeEqual({

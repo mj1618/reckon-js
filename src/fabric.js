@@ -5,12 +5,12 @@ import Select from './select';
 import {pathGet,inScope} from './helpers';
 import Emitter from './emitter';
 
-class Fabric {
+class Fabric extends Emitter {
     
     constructor(data){
+        super();
         this._data = Immutable.fromJS(data);
         this._selects = {};
-        this._emitter = new Emitter();
         
     }
     
@@ -20,29 +20,6 @@ class Fabric {
             this._selects[path]  = new Select(this,path);    
         }
         return this._selects[path];
-    }
-    
-    _emit(name, data, path){
-        return this._emitter.emit(name,data,path);
-    }
-    
-    _on(name, fn, filter){
-        return this._emitter.on(name,fn,filter);
-    }
-    _after(name, fn, filter){
-        return this._emitter.after(name,fn,filter);
-    }
-    _before(name, fn, filter){
-        return this._emitter.before(name,fn,filter);
-    }
-    
-    
-    _off(name, fn, filter){
-        return this._emitter.off(name,fn,filter);
-    }
-    
-    _once(name, fn, filter){
-        return this._emitter.once(name,fn,filter);
     }
     
     _get(path=[]){
@@ -65,7 +42,7 @@ class Fabric {
         } else {
             this._data = Immutable.fromJS(data);
         }
-        this._emit('λupdated',{
+        this.emit('λupdated',{
             path:path,
             oldData:old
         });

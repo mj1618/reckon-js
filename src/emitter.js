@@ -16,7 +16,7 @@ export default class Emitter {
     
     _handle(type,data,filterData){
         if(!this._ons[type]){
-            throw '_ons['+type+'] should be initialised';
+            return false;
         }
         
         let current = this._ons[type]
@@ -65,6 +65,14 @@ export default class Emitter {
     
     once(type,fn,filter=null){
         return this.on(type,fn,filter,1);
+    }
+    
+    clear(type){
+        this._ons[type] = [];
+    }
+    
+    clearAll(){
+        this._ons={};
     }
     
     has(type,fn,filter){

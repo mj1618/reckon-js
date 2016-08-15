@@ -126,17 +126,10 @@ describe('Events API', function() {
             fabric.select().once('TEST_EVENT',()=>{
                 n+=1;
             });
-            console.log(fabric._emitter._ons);
-            fabric.select().emit('TEST_EVENT');
-            
-            console.log(fabric._emitter._ons);
             
             fabric.select().emit('TEST_EVENT');
-            
-            console.log(fabric._emitter._ons);
-            
+            fabric.select().emit('TEST_EVENT');
             assert.equal(1,n,'n should have been 1, actually was: '+n);
-            
         });
         
         
@@ -241,6 +234,51 @@ describe('Events API', function() {
             });
             fabric.select().emit('TEST_EVENT');
             assert(_.isEqual(order,['a','b']),'events fired in wrong order');
+            
+        });
+        
+        
+        it('clear',function(){
+          
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            fabric.select().on('TEST_EVENT',()=>{
+                throw 'should not have been called';
+            });
+            
+            fabric.select().clear('TEST_EVENT');
+            fabric.select().emit('TEST_EVENT');
+            
+        });
+        
+        it('clearAll',function(){
+          
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            fabric.select().on('TEST_EVENT',()=>{
+                throw 'should not have been called';
+            });
+            
+            fabric.select().clearAll();
+            fabric.select().emit('TEST_EVENT');
             
         });
         
