@@ -11,10 +11,10 @@ export function isSubPath(path,subPath){
 
 export function pathDiff(from,to){
     if(!isSubPath(from,to)){
-        throw 'pathDiff(from,to) must be given an initial path and a sub path: '+to+' is not a sub path of '+from;
+        throw new Error('pathDiff(from,to) must be given an initial path and a sub path: '+to+' is not a sub path of '+from);
     }
     if(!to){
-        throw 'pathDiff(from,to) must be passed a "to" path, instead received: '+to;
+        throw new Error('pathDiff(from,to) must be passed a "to" path, instead received: '+to);
     }
     if(!from || from.length==0){
         return to;

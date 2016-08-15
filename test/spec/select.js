@@ -127,7 +127,7 @@ describe('Fabric Select API',function(){
             let fruitSelect = fabric.select('fruits[0]');
             
             fruitSelect.onUpdate(data=>{
-                throw 'Update should not have been called as data has not changed: '+data;
+                throw new Error('Update should not have been called as data has not changed: '+data);
             });
             
             fruitSelect.update((state)=>{
@@ -152,7 +152,7 @@ describe('Fabric Select API',function(){
             let fruitSelect = fabric.select('fruits');
             
             fruitSelect.onUpdate(()=>{
-                throw 'Update should not have been called as data has not changed: '+fruitSelect.get();
+                throw new Error('Update should not have been called as data has not changed: '+fruitSelect.get());
             });
             
             fruitSelect.update((state)=>{
@@ -178,7 +178,7 @@ describe('Fabric Select API',function(){
             let rootSelect = fabric.select();
             
             fruitSelect.onUpdate(data=>{
-                throw 'Update should not have been called as data has not changed: '+data;
+                throw new Error('Update should not have been called as data has not changed: '+data);
             });
             
             rootSelect.update((state)=>{
@@ -206,7 +206,7 @@ describe('Fabric Select API',function(){
             let fruitSelect = fabric.select('fruits[0]');
             
             fruitSelect.onUpdate(data=>{
-                throw 'Update should not have been called as data has not changed: '+data;
+                throw new Error('Update should not have been called as data has not changed: '+data);
             });
             
             fruitsSelect.update((state)=>{
@@ -251,5 +251,22 @@ describe('Fabric Select API',function(){
             });
             
         });
+        
+        it('nested updates shouldnt be allowed',function(){
+            assert.throws(()=>{
+                let fabric = new Fabric({
+                    fruit:'apple'
+                });
+
+                fabric.select().update((state)=>{
+                    fabric.select('fruit').update((state)=>{
+                        return 'second';
+                    });
+                    return 'third';
+                });
+            },Error);
+            
+        });
+        
     });
 });

@@ -46,7 +46,7 @@ describe('Fabric Filter API',function(){
             let fruitSelect = fabric.select('fruit[0]');
             
             fruitSelect.on('SCOPED_EVENT',()=>{
-                throw 'this should not be called';
+                throw new Error('this should not be called');
             });
             
             fabric.select().emit('SCOPED_EVENT');
@@ -96,7 +96,7 @@ describe('Fabric Filter API',function(){
             let fruitsSelect = fabric.select('fruit');
             
             fruitsSelect.on('SCOPED_EVENT',()=>{
-                throw 'this should not be called';
+                throw new Error('this should not be called');
             },fruitsSelect.FILTER_SUPER);
             
             fruitSelect.emit('SCOPED_EVENT');
@@ -118,7 +118,7 @@ describe('Fabric Filter API',function(){
             let fruitsSelect = fabric.select('fruit');
             
             fruitSelect.on('SCOPED_EVENT',()=>{
-                throw 'this should not be called';
+                throw new Error('this should not be called');
             },fruitSelect.FILTER_SUPER_EXCLUSIVE);
             
             fruitSelect.emit('SCOPED_EVENT');
@@ -165,7 +165,7 @@ describe('Fabric Filter API',function(){
             let fruitsSelect = fabric.select('fruit');
             
             fruitSelect.on('SCOPED_EVENT',()=>{
-                throw 'this should not be called';
+                throw new Error('this should not be called');
             },fruitSelect.FILTER_SUB);
             
             fruitsSelect.emit('SCOPED_EVENT');
@@ -189,7 +189,7 @@ describe('Fabric Filter API',function(){
             let fruitsSelect = fabric.select('fruit');
             
             fruitSelect.on('SCOPED_EVENT',()=>{
-                throw 'this should not be called';
+                throw new Error('this should not be called');
             },fruitSelect.FILTER_SUB_EXCLUSIVE);
             
             fruitSelect.emit('SCOPED_EVENT');

@@ -11,7 +11,7 @@ class Fabric extends Emitter {
         super();
         this._data = Immutable.fromJS(data);
         this._selects = {};
-        
+        this.updating=false;
     }
     
     select(selector){

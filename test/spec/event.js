@@ -20,7 +20,7 @@ describe('Events API', function() {
             });
             
             let remover = fabric.select().on('TEST_EVENT',()=>{
-                throw 'should not have called this listener';
+                throw new Error('should not have called this listener');
             });
             
             remover();
@@ -41,7 +41,7 @@ describe('Events API', function() {
                 ]
             });
             let fn = ()=>{
-                throw 'should not have called this listener';
+                throw new Error('should not have called this listener');
             };
             fabric.select().on('TEST_EVENT',fn);
             
@@ -94,7 +94,7 @@ describe('Events API', function() {
             
             let fn = ()=>{
                 if(n>0)
-                    throw 'function should only have been called once';
+                    throw new Error('function should only have been called once');
                 n+=1;
             };
             
@@ -277,7 +277,7 @@ describe('Events API', function() {
             });
             
             fabric.select().on('TEST_EVENT',()=>{
-                throw 'should not have been called';
+                throw new Error('should not have been called');
             });
             
             fabric.select().clear('TEST_EVENT');
@@ -299,7 +299,7 @@ describe('Events API', function() {
             });
             
             fabric.select().on('TEST_EVENT',()=>{
-                throw 'should not have been called';
+                throw new Error('should not have been called');
             });
             
             fabric.select().clearAll();
