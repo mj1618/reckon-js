@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import Immutable from 'immutable';
 
 export function isSubPath(path,subPath){
     if(!path || path.length==0){
@@ -52,5 +53,5 @@ export function isRelativeEqual(a,b){
         }
     }
     let aData = relativeData(a.data,a.path,b.path);
-    return aData===b.data;
+    return Immutable.is(aData,b.data);
 }

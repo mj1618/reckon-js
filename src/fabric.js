@@ -4,12 +4,12 @@ import _ from 'lodash';
 import Select from './select';
 import {pathGet} from './helpers';
 
-class Fabric extends EventEmitter {
+class Fabric {
     
     constructor(data){
-        super();
         this._data = Immutable.fromJS(data);
         this._selects = {};
+        this._emitter = new EventEmitter();
     }
     
     select(selector){
@@ -21,31 +21,32 @@ class Fabric extends EventEmitter {
     }
     
     emit(name, data){
-        super.emit(name,data);
+        this._emitter.emit(name,data);
     }
     
     on(name, fn, path=[]){
         return new Promise((resolve,reject)=>{
-            super.on(name,function(){
-                let newData = fn(this._get(path),...arguments);
-                if(newData){
-                    this._set(newData,path);
-                }
-                resolve();
+            this._emitter.on(name,data=>{
+                this.doListener(name,data,fn,path,resolve,reject);
             });
         });
     }
     
     once(name, fn, path=[]){
         return new Promise((resolve,reject)=>{
-            super.once(name,function(){
-                let newData = fn(this._get(path),...arguments);
-                if(newData){
-                    this._set(newData,path);
-                }
-                resolve();
+            this._emitter.once(name,(data)=>{
+                this.doListener(name,data,fn,path,resolve,reject);
             });
         });
+    }
+    
+    doListener(name,data,fn,path,resolve,reject){
+        if(name === path+':update'){
+            this._set(fn(this._get(path),data), path);
+            resolve(this._get(path));
+        } else {
+            resolve(fn(this._get(path),data));
+        }
     }
     
     _get(path=[]){
@@ -73,7 +74,6 @@ class Fabric extends EventEmitter {
             oldData:old
         });
     }
-    
 }
 
 export default Fabric;

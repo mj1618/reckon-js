@@ -31,12 +31,14 @@ describe('Fabric API', function() {
             });
             fabric.on('CHANGE_FRUIT',state=>{
                 assert(state.get('fruit') == 'apple', 'wasnt passed state');
-                return {
-                    fruit:'pear'
-                };
+                fabric.select().update(() => {
+                    return {
+                        fruit:'pear'
+                    };
+                });
             });
-            fabric.on(':updated',state=>{
-                assert(state.toJS().fruit=='pear','not updated');
+            fabric.on(':updated',()=>{
+                assert(fabric.select().get().toJS().fruit=='pear','not updated');
                 done();
             });
             fabric.emit('CHANGE_FRUIT');

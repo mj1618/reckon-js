@@ -43,8 +43,7 @@ export default class Select {
                         data:this.get()
                     })
                 ){
-                    fn(this.get());
-                    resolve();
+                    resolve(fn(this.get()));
                 }
             });
         });
