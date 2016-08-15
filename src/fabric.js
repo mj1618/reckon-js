@@ -61,7 +61,7 @@ class Fabric {
         } else {
             this._data = Immutable.fromJS(data);
         }
-        this.emit(':updated',{
+        this.emit('λupdated',{
             path:path,
             oldData:old
         });

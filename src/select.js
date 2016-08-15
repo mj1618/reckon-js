@@ -25,23 +25,17 @@ export default class Select {
     }
     
     update(fn){
-        let promise = this._fabric.once(this._path+':update',()=>{
+        let promise = this._fabric.once(this._path+'λupdate',()=>{
             this._fabric._set(fn(this.get()),this._path);
             return this.get();
         });
-        this._fabric.emit(this._path+':update',this.get());
+        this._fabric.emit(this._path+'λupdate',this.get());
         return promise;
-    }
-    
-    onExact(name,fn){
-        return new Promise((resolve,reject)=>{
-            
-        });
     }
     
     onUpdate(fn){
         return new Promise((resolve,reject)=>{
-            this._fabric.on(':updated',(data) => {
+            this._fabric.on('λupdated',(data) => {
                 if(
                     isSubPath(data.path,this._path) &&
                     !isRelativeEqual({

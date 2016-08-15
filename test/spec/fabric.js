@@ -36,7 +36,7 @@ describe('Fabric API', function() {
                     };
                 });
             });
-            fabric.on(':updated',()=>{
+            fabric.on('λupdated',()=>{
                 assert(fabric.select().get().toJS().fruit=='pear','not updated');
                 done();
             });
