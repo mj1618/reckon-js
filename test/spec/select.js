@@ -104,8 +104,8 @@ describe('Fabric Select API',function(){
                 done();
             });
             
-            fruitSelect.update(()=>{
-                assert(fruitSelect.get()==='apple','wasnt given proper state in fruitSelect');
+            fruitSelect.update((state)=>{
+                assert(state==='apple','wasnt given proper state in fruitSelect');
                 return 'banana';
             });
             
@@ -131,8 +131,8 @@ describe('Fabric Select API',function(){
                 throw 'Update should not have been called as data has not changed: '+data;
             });
             
-            fruitSelect.update(()=>{
-                assert(fruitSelect.get()==='apple','wasnt given proper state in fruitSelect');
+            fruitSelect.update((state)=>{
+                assert(state==='apple','wasnt given proper state in fruitSelect');
                 return 'apple';
             }).then(()=>{
                 setTimeout(done,100);
@@ -159,8 +159,8 @@ describe('Fabric Select API',function(){
                 throw 'Update should not have been called as data has not changed: '+fruitSelect.get();
             });
             
-            fruitSelect.update(()=>{
-                return fruitSelect.get();
+            fruitSelect.update((state)=>{
+                return state;
             }).then(()=>{
                 setTimeout(done,100);
             });
@@ -187,8 +187,8 @@ describe('Fabric Select API',function(){
                 throw 'Update should not have been called as data has not changed: '+data;
             });
             
-            rootSelect.update(()=>{
-                return rootSelect.get().merge({
+            rootSelect.update((state)=>{
+                return state.merge({
                     veges:[]
                 });
             }).then(()=>{
@@ -217,8 +217,8 @@ describe('Fabric Select API',function(){
                 throw 'Update should not have been called as data has not changed: '+data;
             });
             
-            fruitsSelect.update(()=>{
-                return fruitsSelect.get().map(f=>f.name==='pear'?{name:'orange'}:f);
+            fruitsSelect.update((state)=>{
+                return state.map(f=>f.name==='pear'?{name:'orange'}:f);
             }).then(()=>{
                 setTimeout(done,100);
             });
@@ -246,8 +246,8 @@ describe('Fabric Select API',function(){
                 done();
             });
             
-            rootSelect.update(()=>{
-                assert(rootSelect.get().toJS().fruits[0]==='apple','wasnt given proper state in update()');
+            rootSelect.update((state)=>{
+                assert(state.toJS().fruits[0]==='apple','wasnt given proper state in update()');
                 return {
                     fruits: [
                         'banana',

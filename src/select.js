@@ -26,7 +26,7 @@ export default class Select {
     
     update(fn){
         let promise = this._fabric.once(this._path+':update',()=>{
-            this._fabric._set(fn(),this._path);
+            this._fabric._set(fn(this.get()),this._path);
             return this.get();
         });
         this._fabric.emit(this._path+':update',this.get());
