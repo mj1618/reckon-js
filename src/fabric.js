@@ -29,6 +29,17 @@ class Fabric {
     _on(name, fn, filter){
         return this._emitter.on(name,fn,filter);
     }
+    _after(name, fn, filter){
+        return this._emitter.after(name,fn,filter);
+    }
+    _before(name, fn, filter){
+        return this._emitter.before(name,fn,filter);
+    }
+    
+    
+    _off(name, fn, filter){
+        return this._emitter.off(name,fn,filter);
+    }
     
     _once(name, fn, scope){
         return this._emitter.once(name,fn,scope);

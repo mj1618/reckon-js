@@ -42,6 +42,18 @@ export default class Select {
         return this._fabric._on(name,fn,filter);
     }
     
+    before(name,fn,filter=this.FILTER_EXACT){
+        return this._fabric._before(name,fn,filter);
+    }
+    
+    after(name,fn,filter=this.FILTER_EXACT){
+        return this._fabric._after(name,fn,filter);
+    }
+    
+    off(name,fn,filter=this.FILTER_EXACT){
+        return this._fabric._off(name,fn,filter);
+    }
+    
     once(name,fn,filter=this.FILTER_EXACT){
         return this._fabric._once(name,fn,filter);
     }

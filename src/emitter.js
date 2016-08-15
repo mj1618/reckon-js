@@ -72,8 +72,9 @@ export default class Emitter {
     }
     
     off(type,fn,filter=null){
-        if(this._ons[type] && this.has(type,fn.filter)){
-            this._ons = this._ons.filter(a => a.fn!==fn || a.filter!==filter);
+        let remover = this.getRemover(type,fn,filter);
+        if(remover){
+            remover();
             return true;
         } else {
             return false;

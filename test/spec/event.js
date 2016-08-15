@@ -1,6 +1,7 @@
 import assert from 'assert';
 import Fabric from '../../src/index';
 import Immutable from 'immutable';
+import _ from 'lodash';
 describe('Events API', function() {
 
     describe('listeners', function() {
@@ -23,6 +24,28 @@ describe('Events API', function() {
             });
             
             remover();
+            
+            fabric.select().emit('TEST_EVENT');
+            
+        });
+        it('removing with off',function(){
+          
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            let fn = ()=>{
+                throw 'should not have called this listener';
+            };
+            fabric.select().on('TEST_EVENT',fn);
+            
+            fabric.select().off('TEST_EVENT',fn);
             
             fabric.select().emit('TEST_EVENT');
             
@@ -81,6 +104,111 @@ describe('Events API', function() {
             fabric.select().emit('TEST_EVENT');
             
             assert.equal(2,n,'n should have been 2, actually was: '+n);
+            
+        });
+        
+        
+        it('before',function(){
+          
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let order=[];
+            
+            fabric.select().on('TEST_EVENT',()=>{
+                order.push('b');
+            });
+            fabric.select().before('TEST_EVENT',()=>{
+                order.push('a');
+            });
+            fabric.select().emit('TEST_EVENT');
+            assert(_.isEqual(order,['a','b']),'events fired in wrong order');
+            
+        });
+        
+        it('before',function(){
+          
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let order=[];
+            
+            fabric.select().before('TEST_EVENT',()=>{
+                order.push('a');
+            });
+            fabric.select().on('TEST_EVENT',()=>{
+                order.push('b');
+            });
+            fabric.select().emit('TEST_EVENT');
+            assert(_.isEqual(order,['a','b']),'events fired in wrong order');
+            
+        });
+        
+        it('after',function(){
+          
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let order=[];
+            
+            fabric.select().on('TEST_EVENT',()=>{
+                order.push('a');
+            });
+            fabric.select().after('TEST_EVENT',()=>{
+                order.push('b');
+            });
+            fabric.select().emit('TEST_EVENT');
+            assert(_.isEqual(order,['a','b']),'events fired in wrong order');
+            
+        });
+        
+        it('after',function(){
+          
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let order=[];
+            
+            fabric.select().after('TEST_EVENT',()=>{
+                order.push('b');
+            });
+            fabric.select().on('TEST_EVENT',()=>{
+                order.push('a');
+            });
+            fabric.select().emit('TEST_EVENT');
+            assert(_.isEqual(order,['a','b']),'events fired in wrong order');
             
         });
     });
