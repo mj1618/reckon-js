@@ -31,7 +31,7 @@ class Fabric {
                     resolve(fn(data,path));
                 }
             });
-        });
+        }); 
     }
     
     _once(name, fn, scope){

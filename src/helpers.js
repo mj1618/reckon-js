@@ -26,7 +26,9 @@ export function pathDiff(from,to){
 const scopeTypes = {
     EXACT:'EXACT',
     SUPER:'SUPER',
-    SUB:'SUB'
+    SUB:'SUB',
+    SUPER_EXCLUSIVE:'SUPER_EXCLUSIVE',
+    SUB_EXCLUSIVE:'SUB_EXCLUSIVE'
 };
 
 export const scopes = {
@@ -42,9 +44,33 @@ export const scopes = {
             path:path
         };
     },
+    superInclusive:path=>{
+        return {
+            type:scopeTypes.SUPER,
+            path:path
+        };
+    },
+    superExclusive:path=>{
+        return {
+            type:scopeTypes.SUPER_EXCLUSIVE,
+            path:path
+        };
+    },
     sub:path=>{
         return {
             type:scopeTypes.SUB,
+            path:path
+        };
+    },
+    subInclusive:path=>{
+        return {
+            type:scopeTypes.SUB,
+            path:path
+        };
+    },
+    subExclusive:path=>{
+        return {
+            type:scopeTypes.SUB_EXCLUSIVE,
             path:path
         };
     },
@@ -54,6 +80,7 @@ export const scopes = {
             path:[]
         };
     },
+    
     any:path=>{
         return {
             type:scopeTypes.SUB,
@@ -77,6 +104,12 @@ export function inScope(scope,path){
             break;
         case scopeTypes.SUB:
             return isSubPath(scope.path,path);
+            break;
+        case scopeTypes.SUPER_EXCLUSIVE:
+            return isSubPath(path,scope.path) && ! _.isEqual(path,scope.path);
+            break;
+        case scopeTypes.SUB_EXCLUSIVE:
+            return isSubPath(scope.path,path) && ! _.isEqual(path,scope.path);
             break;
         default:
             return false;

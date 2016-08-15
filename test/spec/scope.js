@@ -101,6 +101,28 @@ describe('Fabric Select API',function(){
             
             fruitSelect.emit('SCOPED_EVENT');
         });
+        it('should not show message on super exclusive scope',function(){
+            
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let fruitSelect = fabric.select('fruit[0]');
+            let fruitsSelect = fabric.select('fruit');
+            
+            fruitSelect.on('SCOPED_EVENT',()=>{
+                throw 'this should not be called';
+            },scopes.superExclusive);
+            
+            fruitSelect.emit('SCOPED_EVENT');
+        });
         
         it('should show message on sub scope',function(done){
             
@@ -148,6 +170,31 @@ describe('Fabric Select API',function(){
             
             fruitsSelect.emit('SCOPED_EVENT');
         });
+        
+        
+        it('should not show message on sub exclusive scope',function(){
+            
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let fruitSelect = fabric.select('fruit[0]');
+            let fruitsSelect = fabric.select('fruit');
+            
+            fruitSelect.on('SCOPED_EVENT',()=>{
+                throw 'this should not be called';
+            },scopes.subExclusive);
+            
+            fruitSelect.emit('SCOPED_EVENT');
+        });
+        
         
         it('should show message on root scope',function(done){
             
