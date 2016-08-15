@@ -28,7 +28,7 @@ describe('Fabric API', function() {
             let fabric = new Fabric({
                 fruit:'apple'
             });
-            fabric.on('CHANGE_FRUIT',()=>{
+            fabric._on('CHANGE_FRUIT',()=>{
                 assert(fabric.select().get().get('fruit') == 'apple', 'wasnt passed state');
                 fabric.select().update(() => {
                     return {
@@ -36,11 +36,11 @@ describe('Fabric API', function() {
                     };
                 });
             });
-            fabric.on('λupdated',()=>{
+            fabric._on('λupdated',()=>{
                 assert(fabric.select().get().toJS().fruit=='pear','not updated');
                 done();
             });
-            fabric.emit('CHANGE_FRUIT');
+            fabric._emit('CHANGE_FRUIT');
         });
 
     });

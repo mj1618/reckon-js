@@ -20,11 +20,11 @@ class Fabric {
         return this._selects[path];
     }
     
-    emit(name, data, path){
+    _emit(name, data, path){
         this._emitter.emit(name,data,path);
     }
     
-    on(name, fn, scope){
+    _on(name, fn, scope){
         return new Promise((resolve,reject)=>{
             this._emitter.on(name,(data,path)=>{
                 if(inScope(scope,path)){
@@ -34,7 +34,7 @@ class Fabric {
         });
     }
     
-    once(name, fn, scope){
+    _once(name, fn, scope){
         return new Promise((resolve,reject)=>{
             this._emitter.once(name,(data,path)=>{
                 if(inScope(scope,path)){
@@ -65,7 +65,7 @@ class Fabric {
         } else {
             this._data = Immutable.fromJS(data);
         }
-        this.emit('λupdated',{
+        this._emit('λupdated',{
             path:path,
             oldData:old
         });

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {isSubPath,isRelativeEqual,pathGet} from './helpers';
+import {isSubPath,isRelativeEqual,pathGet,scopes} from './helpers';
 
 export default class Select {
     
@@ -25,49 +25,29 @@ export default class Select {
     }
     
     emit(name,data){
-        this._fabric.emit(name,data,this._path);
+        this._fabric._emit(name,data,this._path);
     }
     
-    on(name,fn){
-        return this._fabric.on(name,fn,{
-            type:'exact',
-            path:this._path
-        });
+    on(name,fn,scope=scopes.exact){
+        return this._fabric._on(name,fn,scope(this._path));
     }
-    onSuper(name,fn){
-        return this._fabric.on(name,fn,{
-            type:'super',
-            path:this._path
-        });
-    }
-    onSub(name,fn){
-        return this._fabric.on(name,fn,{
-            type:'sub',
-            path:this._path
-        });
-    }
-    onRoot(name,fn){
-        return this._fabric.on(name,fn,{
-            type:'root',
-            path:this._path
-        });
+    
+    once(name,fn,scope=scopes.exact){
+        return this._fabric._once(name,fn,scope(this._path));
     }
     
     update(fn){
-        let promise = this._fabric.once('λupdate',()=>{
+        let promise = this.once('λupdate',()=>{
             this._fabric._set(fn(this.get()),this._path);
             return this.get();
-        }, {
-            type:'exact',
-            path:this._path
         });
-        this._fabric.emit('λupdate',this.get(),this._path);
+        this._fabric._emit('λupdate',this.get(),this._path);
         return promise;
     }
     
     onUpdate(fn){
         return new Promise((resolve,reject)=>{
-            this._fabric.on('λupdated',(data) => {
+            this._fabric._on('λupdated',(data) => {
                 if(
                     isSubPath(data.path,this._path) &&
                     !isRelativeEqual({

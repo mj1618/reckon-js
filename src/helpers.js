@@ -5,7 +5,7 @@ export function isSubPath(path,subPath){
     if(!path || path.length==0){
         return true;
     } else {
-        return _.isEqual(path.slice(0,path.length),path);
+        return _.isEqual(subPath.slice(0,path.length),path);
     }
 }
 
@@ -23,23 +23,60 @@ export function pathDiff(from,to){
     }
 }
 
+const scopeTypes = {
+    EXACT:'EXACT',
+    SUPER:'SUPER',
+    SUB:'SUB'
+};
+
+export const scopes = {
+    exact:path=>{
+        return {
+            type:scopeTypes.EXACT,
+            path:path
+        };
+    },
+    super:path=>{
+        return {
+            type:scopeTypes.SUPER,
+            path:path
+        };
+    },
+    sub:path=>{
+        return {
+            type:scopeTypes.SUB,
+            path:path
+        };
+    },
+    root:path=>{
+        return {
+            type:scopeTypes.EXACT,
+            path:[]
+        };
+    },
+    any:path=>{
+        return {
+            type:scopeTypes.SUB,
+            path:[]
+        }
+    }
+}
+
+
 export function inScope(scope,path){
     if(!scope){
         return true;
     }
     
     switch(scope.type){
-        case 'exact':
+        case scopeTypes.EXACT:
             return _.isEqual(scope.path,path);
             break;
-        case 'super':
+        case scopeTypes.SUPER:
             return isSubPath(path,scope.path);
             break;
-        case 'sub':
+        case scopeTypes.SUB:
             return isSubPath(scope.path,path);
-            break;
-        case 'root':
-            return !path || path.length===0;
             break;
         default:
             return false;
