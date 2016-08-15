@@ -50,7 +50,7 @@ export default class Emitter {
                 type,
                 fn,
                 filter,
-                n:-1,
+                n,
                 action
             });
             return this.getRemover(type,fn,filter);

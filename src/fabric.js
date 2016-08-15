@@ -41,8 +41,8 @@ class Fabric {
         return this._emitter.off(name,fn,filter);
     }
     
-    _once(name, fn, scope){
-        return this._emitter.once(name,fn,scope);
+    _once(name, fn, filter){
+        return this._emitter.once(name,fn,filter);
     }
     
     _get(path=[]){

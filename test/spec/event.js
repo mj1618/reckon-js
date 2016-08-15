@@ -108,6 +108,38 @@ describe('Events API', function() {
         });
         
         
+        it('once',function(){
+          
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let n = 0;
+            
+            fabric.select().once('TEST_EVENT',()=>{
+                n+=1;
+            });
+            console.log(fabric._emitter._ons);
+            fabric.select().emit('TEST_EVENT');
+            
+            console.log(fabric._emitter._ons);
+            
+            fabric.select().emit('TEST_EVENT');
+            
+            console.log(fabric._emitter._ons);
+            
+            assert.equal(1,n,'n should have been 1, actually was: '+n);
+            
+        });
+        
+        
         it('before',function(){
           
             let fabric = new Fabric({
@@ -211,5 +243,7 @@ describe('Events API', function() {
             assert(_.isEqual(order,['a','b']),'events fired in wrong order');
             
         });
+        
+        
     });
 });
