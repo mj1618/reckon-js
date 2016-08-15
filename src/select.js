@@ -30,14 +30,20 @@ export default class Select {
         return promise;
     }
     
+    onExact(name,fn){
+        return new Promise((resolve,reject)=>{
+            
+        });
+    }
+    
     onUpdate(fn){
         return new Promise((resolve,reject)=>{
-            this._fabric.on(':updated',(state,args) => {
+            this._fabric.on(':updated',(data) => {
                 if(
-                    isSubPath(args.path,this._path) &&
+                    isSubPath(data.path,this._path) &&
                     !isRelativeEqual({
-                        path:args.path,
-                        data:args.oldData,
+                        path:data.path,
+                        data:data.oldData,
                     },{
                         path:this._path,
                         data:this.get()

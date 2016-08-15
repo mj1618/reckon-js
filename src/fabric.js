@@ -27,7 +27,7 @@ class Fabric {
     on(name, fn, path=[]){
         return new Promise((resolve,reject)=>{
             this._emitter.on(name,data=>{
-                this.doListener(name,data,fn,path,resolve,reject);
+                this._doListener(name,data,fn,path,resolve,reject);
             });
         });
     }
@@ -35,17 +35,17 @@ class Fabric {
     once(name, fn, path=[]){
         return new Promise((resolve,reject)=>{
             this._emitter.once(name,(data)=>{
-                this.doListener(name,data,fn,path,resolve,reject);
+                this._doListener(name,data,fn,path,resolve,reject);
             });
         });
     }
     
-    doListener(name,data,fn,path,resolve,reject){
+    _doListener(name,data,fn,path,resolve,reject){
         if(name === path+':update'){
-            this._set(fn(this._get(path),data), path);
+            this._set(fn(data), path);
             resolve(this._get(path));
         } else {
-            resolve(fn(this._get(path),data));
+            resolve(fn(data));
         }
     }
     

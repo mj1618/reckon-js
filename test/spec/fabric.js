@@ -24,13 +24,12 @@ describe('Fabric API', function() {
         });
     });
     describe('base events',function(){
-        
         it('check events',function(done){
             let fabric = new Fabric({
                 fruit:'apple'
             });
-            fabric.on('CHANGE_FRUIT',state=>{
-                assert(state.get('fruit') == 'apple', 'wasnt passed state');
+            fabric.on('CHANGE_FRUIT',()=>{
+                assert(fabric.select().get().get('fruit') == 'apple', 'wasnt passed state');
                 fabric.select().update(() => {
                     return {
                         fruit:'pear'
@@ -45,5 +44,4 @@ describe('Fabric API', function() {
         });
 
     });
-
 });
