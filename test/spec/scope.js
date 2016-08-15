@@ -1,7 +1,7 @@
 import assert from 'assert';
-import Fabric from '../../src/fabric';
+import Fabric from '../../src/index';
 import Immutable from 'immutable';
-import {scopes} from '../../src/helpers';
+import {scopes} from '../../src/index';
 
 describe('Fabric Select API',function(){
     describe('data',function(){
@@ -30,7 +30,7 @@ describe('Fabric Select API',function(){
         });
         
         
-        it('should not show message on exact scope',function(done){
+        it('should not show message on exact scope',function(){
             
             let fabric = new Fabric({
                 fruits: [
@@ -50,7 +50,6 @@ describe('Fabric Select API',function(){
             });
             
             fabric.select().emit('SCOPED_EVENT');
-            setTimeout(done,100);
         });
         
         
@@ -80,7 +79,7 @@ describe('Fabric Select API',function(){
         });
         
         
-        it('should not show message on super scope',function(done){
+        it('should not show message on super scope',function(){
             
             let fabric = new Fabric({
                 fruits: [
@@ -101,7 +100,6 @@ describe('Fabric Select API',function(){
             },scopes.super);
             
             fruitSelect.emit('SCOPED_EVENT');
-            setTimeout(done,100);
         });
         
         it('should show message on sub scope',function(done){
@@ -128,7 +126,7 @@ describe('Fabric Select API',function(){
             
         });
         
-        it('should not show message on sub scope',function(done){
+        it('should not show message on sub scope',function(){
             
             let fabric = new Fabric({
                 fruits: [
@@ -149,8 +147,6 @@ describe('Fabric Select API',function(){
             },scopes.sub);
             
             fruitsSelect.emit('SCOPED_EVENT');
-            setTimeout(done,100);
-            
         });
         
         it('should show message on root scope',function(done){

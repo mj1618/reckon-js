@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Fabric from '../../src/fabric';
+import Fabric from '../../src/index';
 import Immutable from 'immutable';
 describe('Fabric API', function() {
 

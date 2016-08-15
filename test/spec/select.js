@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Fabric from '../../src/fabric';
+import Fabric from '../../src/index';
 import Immutable from 'immutable';
 describe('Fabric Select API',function(){
     describe('data',function(){
@@ -112,7 +112,7 @@ describe('Fabric Select API',function(){
         });
         
         
-        it('should not fire update on select object same',function(done){
+        it('should not fire update on select object same',function(){
             
             let fabric = new Fabric({
                 fruits: [
@@ -135,12 +135,12 @@ describe('Fabric Select API',function(){
                 assert(state==='apple','wasnt given proper state in fruitSelect');
                 return 'apple';
             }).then(()=>{
-                setTimeout(done,100);
+                done();
             });
             
         });
         
-        it('should not fire update on select object same',function(done){
+        it('should not fire update on select object same',function(){
             
             let fabric = new Fabric({
                 fruits: [
@@ -162,12 +162,12 @@ describe('Fabric Select API',function(){
             fruitSelect.update((state)=>{
                 return state;
             }).then(()=>{
-                setTimeout(done,100);
+                done();
             });
             
         });
         
-        it('should not fire update on select object same',function(done){
+        it('should not fire update on select object same',function(){
             
             let fabric = new Fabric({
                 fruits: [
@@ -192,7 +192,7 @@ describe('Fabric Select API',function(){
                     veges:[]
                 });
             }).then(()=>{
-                setTimeout(done,100);
+                done();
             });
             
         });
@@ -220,7 +220,7 @@ describe('Fabric Select API',function(){
             fruitsSelect.update((state)=>{
                 return state.map(f=>f.name==='pear'?{name:'orange'}:f);
             }).then(()=>{
-                setTimeout(done,100);
+                done();
             });
         });
         

@@ -44,7 +44,6 @@ class Fabric {
         });
     }
     
-    
     _get(path=[]){
         if(path && path.length>0){
             return pathGet(this._data,path);
