@@ -23,15 +23,15 @@ class Fabric {
     }
     
     _emit(name, data, path){
-        this._emitter.emit(name,data,path);
+        return this._emitter.emit(name,data,path);
     }
     
     _on(name, fn, filter){
-        this._emitter.on(name,fn,filter);
+        return this._emitter.on(name,fn,filter);
     }
     
     _once(name, fn, scope){
-        this._emitter.once(name,fn,scope);
+        return this._emitter.once(name,fn,scope);
     }
     
     _get(path=[]){

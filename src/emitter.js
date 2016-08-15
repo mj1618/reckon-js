@@ -39,7 +39,7 @@ export default class Emitter {
     
     on(type,fn,filter=null,n=-1,action=actions.ON){
         if(this.has(type,fn,filter)){
-            return false;
+            return this.getRemover(type,fn,filter);
         } else {
             if(!this._ons[type]){
                 this._ons[type] = [];
@@ -53,8 +53,14 @@ export default class Emitter {
                 n:-1,
                 action
             });
-            return true;
+            return this.getRemover(type,fn,filter);
         } 
+    }
+    
+    getRemover(type,fn,filter){
+        return ()=>{
+            this._ons[type] = this._ons[type].filter(a=>a.fn!==fn || a.filter!==filter);
+        };
     }
     
     once(type,fn,filter=null){
@@ -62,7 +68,7 @@ export default class Emitter {
     }
     
     has(type,fn,filter){
-        return this._ons[type] && this._ons.some(a=>a.fn===fn || a.filter===filter);
+        return this._ons[type] && this._ons[type].some(a=>a.fn===fn && a.filter===filter);
     }
     
     off(type,fn,filter=null){
