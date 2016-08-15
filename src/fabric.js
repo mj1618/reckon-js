@@ -24,30 +24,22 @@ class Fabric {
         this._emitter.emit(name,data);
     }
     
-    on(name, fn, path=[]){
+    on(name, fn){
         return new Promise((resolve,reject)=>{
             this._emitter.on(name,data=>{
-                this._doListener(name,data,fn,path,resolve,reject);
+                resolve(fn(data));
             });
         });
     }
     
-    once(name, fn, path=[]){
+    once(name, fn){
         return new Promise((resolve,reject)=>{
             this._emitter.once(name,(data)=>{
-                this._doListener(name,data,fn,path,resolve,reject);
+                resolve(fn(data));
             });
         });
     }
     
-    _doListener(name,data,fn,path,resolve,reject){
-        if(name === path+':update'){
-            this._set(fn(data), path);
-            resolve(this._get(path));
-        } else {
-            resolve(fn(data));
-        }
-    }
     
     _get(path=[]){
         if(path && path.length>0){
