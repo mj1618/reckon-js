@@ -28,11 +28,22 @@ export function inScope(scope,path){
         return true;
     }
     
-    if(scope.type==='exact'){
-        return _.isEqual(scope.path,path);
+    switch(scope.type){
+        case 'exact':
+            return _.isEqual(scope.path,path);
+            break;
+        case 'super':
+            return isSubPath(path,scope.path);
+            break;
+        case 'sub':
+            return isSubPath(scope.path,path);
+            break;
+        case 'root':
+            return !path || path.length===0;
+            break;
+        default:
+            return false;
     }
-    
-    return false;
 }
 
 export function pathGet(data,path){

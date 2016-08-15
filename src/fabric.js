@@ -28,7 +28,7 @@ class Fabric {
         return new Promise((resolve,reject)=>{
             this._emitter.on(name,(data,path)=>{
                 if(inScope(scope,path)){
-                    resolve(fn(data));
+                    resolve(fn(data,path));
                 }
             });
         });
@@ -38,7 +38,7 @@ class Fabric {
         return new Promise((resolve,reject)=>{
             this._emitter.once(name,(data,path)=>{
                 if(inScope(scope,path)){
-                    resolve(fn(data));
+                    resolve(fn(data,path));
                 }
             });
         });

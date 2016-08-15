@@ -24,6 +24,35 @@ export default class Select {
         }
     }
     
+    emit(name,data){
+        this._fabric.emit(name,data,this._path);
+    }
+    
+    on(name,fn){
+        return this._fabric.on(name,fn,{
+            type:'exact',
+            path:this._path
+        });
+    }
+    onSuper(name,fn){
+        return this._fabric.on(name,fn,{
+            type:'super',
+            path:this._path
+        });
+    }
+    onSub(name,fn){
+        return this._fabric.on(name,fn,{
+            type:'sub',
+            path:this._path
+        });
+    }
+    onRoot(name,fn){
+        return this._fabric.on(name,fn,{
+            type:'root',
+            path:this._path
+        });
+    }
+    
     update(fn){
         let promise = this._fabric.once('λupdate',()=>{
             this._fabric._set(fn(this.get()),this._path);
