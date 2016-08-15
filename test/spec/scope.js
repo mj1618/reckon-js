@@ -3,7 +3,7 @@ import Fabric from '../../src/index';
 import Immutable from 'immutable';
 import {scopes} from '../../src/index';
 
-describe('Fabric Select API',function(){
+describe('Fabric Filter API',function(){
     describe('data',function(){
         
         it('should show message on exact scope',function(done){
@@ -72,7 +72,7 @@ describe('Fabric Select API',function(){
             
             fruitSelect.on('SCOPED_EVENT',()=>{
                 done();
-            },scopes.super);
+            },fruitSelect.FILTER_SUPER);
             
             fruitsSelect.emit('SCOPED_EVENT');
             
@@ -97,7 +97,7 @@ describe('Fabric Select API',function(){
             
             fruitsSelect.on('SCOPED_EVENT',()=>{
                 throw 'this should not be called';
-            },scopes.super);
+            },fruitsSelect.FILTER_SUPER);
             
             fruitSelect.emit('SCOPED_EVENT');
         });
@@ -119,7 +119,7 @@ describe('Fabric Select API',function(){
             
             fruitSelect.on('SCOPED_EVENT',()=>{
                 throw 'this should not be called';
-            },scopes.superExclusive);
+            },fruitSelect.FILTER_SUPER_EXCLUSIVE);
             
             fruitSelect.emit('SCOPED_EVENT');
         });
@@ -142,7 +142,7 @@ describe('Fabric Select API',function(){
             
             fruitsSelect.on('SCOPED_EVENT',()=>{
                 done();
-            },scopes.sub);
+            },fruitsSelect.FILTER_SUB);
             
             fruitSelect.emit('SCOPED_EVENT');
             
@@ -166,7 +166,7 @@ describe('Fabric Select API',function(){
             
             fruitSelect.on('SCOPED_EVENT',()=>{
                 throw 'this should not be called';
-            },scopes.sub);
+            },fruitSelect.FILTER_SUB);
             
             fruitsSelect.emit('SCOPED_EVENT');
         });
@@ -190,7 +190,7 @@ describe('Fabric Select API',function(){
             
             fruitSelect.on('SCOPED_EVENT',()=>{
                 throw 'this should not be called';
-            },scopes.subExclusive);
+            },fruitSelect.FILTER_SUB_EXCLUSIVE);
             
             fruitSelect.emit('SCOPED_EVENT');
         });
@@ -214,7 +214,7 @@ describe('Fabric Select API',function(){
             
             fruitsSelect.on('SCOPED_EVENT',()=>{
                 done();
-            },scopes.root);
+            },fruitsSelect.FILTER_ROOT);
             
             fabric.select().emit('SCOPED_EVENT');
             
@@ -237,7 +237,7 @@ describe('Fabric Select API',function(){
             
             fruitSelect.on('SCOPED_EVENT',()=>{
                 done();
-            },scopes.any);
+            },fruitSelect.FILTER_ANY);
             
             fabric.select().emit('SCOPED_EVENT');
             

@@ -36,7 +36,7 @@ describe('Fabric Select API',function(){
         
     });
     describe('data updates',function(){ 
-        it('should update selected data',function(done){
+        it('should update selected data',function(){
             
             let fabric = new Fabric({
                 fruits: [
@@ -53,10 +53,9 @@ describe('Fabric Select API',function(){
             
             fruitSelect.update(()=>{
                 return 'banana';
-            }).then(()=>{
-                assert(fruitSelect.get()==='banana','select data did not update');
-                done();
             });
+            assert(fruitSelect.get()==='banana','select data did not update');
+
         });
         
         
@@ -134,10 +133,7 @@ describe('Fabric Select API',function(){
             fruitSelect.update((state)=>{
                 assert(state==='apple','wasnt given proper state in fruitSelect');
                 return 'apple';
-            }).then(()=>{
-                done();
             });
-            
         });
         
         it('should not fire update on select object same',function(){
@@ -161,8 +157,6 @@ describe('Fabric Select API',function(){
             
             fruitSelect.update((state)=>{
                 return state;
-            }).then(()=>{
-                done();
             });
             
         });
@@ -191,13 +185,11 @@ describe('Fabric Select API',function(){
                 return state.merge({
                     veges:[]
                 });
-            }).then(()=>{
-                done();
             });
             
         });
         
-        it('should not fire update on select object same',function(done){
+        it('should not fire update on select object same',function(){
             
             let fabric = new Fabric({
                 fruits: [
@@ -219,8 +211,6 @@ describe('Fabric Select API',function(){
             
             fruitsSelect.update((state)=>{
                 return state.map(f=>f.name==='pear'?{name:'orange'}:f);
-            }).then(()=>{
-                done();
             });
         });
         

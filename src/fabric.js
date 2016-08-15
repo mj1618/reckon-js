@@ -1,15 +1,17 @@
 import Immutable from 'immutable';
-import EventEmitter from 'events';
+//import EventEmitter from 'events';
 import _ from 'lodash';
 import Select from './select';
 import {pathGet,inScope} from './helpers';
+import Emitter from './emitter';
 
 class Fabric {
     
     constructor(data){
         this._data = Immutable.fromJS(data);
         this._selects = {};
-        this._emitter = new EventEmitter();
+        this._emitter = new Emitter();
+        
     }
     
     select(selector){
@@ -24,24 +26,12 @@ class Fabric {
         this._emitter.emit(name,data,path);
     }
     
-    _on(name, fn, scope){
-        return new Promise((resolve,reject)=>{
-            this._emitter.on(name,(data,path)=>{
-                if(inScope(scope,path)){
-                    resolve(fn(data,path));
-                }
-            });
-        }); 
+    _on(name, fn, filter){
+        this._emitter.on(name,fn,filter);
     }
     
     _once(name, fn, scope){
-        return new Promise((resolve,reject)=>{
-            this._emitter.once(name,(data,path)=>{
-                if(inScope(scope,path)){
-                    resolve(fn(data,path));
-                }
-            });
-        });
+        this._emitter.once(name,fn,scope);
     }
     
     _get(path=[]){

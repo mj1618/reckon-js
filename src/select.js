@@ -6,6 +6,16 @@ export default class Select {
     constructor(fabric,path=[]){
         this._fabric=fabric;
         this._path=path;
+        this.initFilters();
+    }
+    initFilters(){
+        this.FILTER_EXACT = path=>_.isEqual(path,this._path);
+        this.FILTER_SUB = path=>isSubPath(this._path,path);
+        this.FILTER_SUPER = path=>isSubPath(path,this._path);
+        this.FILTER_ROOT = path=>!path || path.length===0;
+        this.FILTER_ANY = ()=>true;
+        this.FILTER_SUB_EXCLUSIVE = path=>isSubPath(this._path,path) && !_.isEqual(this._path,path);
+        this.FILTER_SUPER_EXCLUSIVE = path=>isSubPath(path,this._path) && !_.isEqual(this._path,path);
     }
     
     get(path=[]){
@@ -24,30 +34,27 @@ export default class Select {
         }
     }
     
-    emit(name,data){
+    emit(name,data=null){
         this._fabric._emit(name,data,this._path);
     }
     
-    on(name,fn,scope=scopes.exact){
-        return this._fabric._on(name,fn,scope(this._path));
+    on(name,fn,filter=this.FILTER_EXACT){
+        return this._fabric._on(name,fn,filter);
     }
     
-    once(name,fn,scope=scopes.exact){
-        return this._fabric._once(name,fn,scope(this._path));
+    once(name,fn,filter=this.FILTER_EXACT){
+        return this._fabric._once(name,fn,filter);
     }
     
     update(fn){
-        let promise = this.once('λupdate',()=>{
+        this.once('λupdate',()=>{
             this._fabric._set(fn(this.get()),this._path);
-            return this.get();
         });
         this._fabric._emit('λupdate',this.get(),this._path);
-        return promise;
     }
     
     onUpdate(fn){
-        return new Promise((resolve,reject)=>{
-            this._fabric._on('λupdated',(data) => {
+        this._fabric._on('λupdated',(data) => {
                 if(
                     isSubPath(data.path,this._path) &&
                     !isRelativeEqual({
@@ -58,9 +65,9 @@ export default class Select {
                         data:this.get()
                     })
                 ){
-                    resolve(fn(this.get()));
+                    fn(this.get());
                 }
-            });
-        });
+            },this.FILTER_ANY);
     }
+    
 }
