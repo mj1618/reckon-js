@@ -56,7 +56,7 @@ export default class Select {
         return this._fabric.after(name,fn,filter);
     }
     
-    off(name,fn,filter=this.FILTER_EXACT){
+    off(name,fn,filter=null){
         return this._fabric.off(name,fn,filter);
     }
     

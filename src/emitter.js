@@ -59,7 +59,7 @@ export default class Emitter {
     
     getRemover(type,fn,filter){
         return ()=>{
-            this._ons[type] = this._ons[type].filter(a=>a.fn!==fn || a.filter!==filter);
+            this._ons[type] = this._ons[type].filter(a=>a.fn!==fn || (filter!==null && a.filter!==filter));
         };
     }
     

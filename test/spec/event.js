@@ -51,6 +51,31 @@ describe('Events API', function() {
             
         });
         
+        it('doesnt remove',function(){
+          
+            let fabric = new Fabric({
+                fruits: [
+                    'apple',
+                    'pear'
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            let n = 0;
+            let fn = ()=>{
+                n+=1;
+            };
+            fabric.select().on('TEST_EVENT',fn);
+            
+            fabric.select().off('TEST_EVENT',fn,fabric.select().FILTER_SUB);
+            
+            fabric.select().emit('TEST_EVENT');
+            
+            assert.equal(n,1,'listener wasnt called');
+            
+        });
         
         it('unique listeners',function(){
           
