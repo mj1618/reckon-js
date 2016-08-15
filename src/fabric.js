@@ -2,7 +2,7 @@ import Immutable from 'immutable';
 import EventEmitter from 'events';
 import _ from 'lodash';
 import Select from './select';
-import {pathGet} from './helpers';
+import {pathGet,inScope} from './helpers';
 
 class Fabric {
     
@@ -20,22 +20,26 @@ class Fabric {
         return this._selects[path];
     }
     
-    emit(name, data){
-        this._emitter.emit(name,data);
+    emit(name, data, path){
+        this._emitter.emit(name,data,path);
     }
     
-    on(name, fn){
+    on(name, fn, scope){
         return new Promise((resolve,reject)=>{
-            this._emitter.on(name,data=>{
-                resolve(fn(data));
+            this._emitter.on(name,(data,path)=>{
+                if(inScope(scope,path)){
+                    resolve(fn(data));
+                }
             });
         });
     }
     
-    once(name, fn){
+    once(name, fn, scope){
         return new Promise((resolve,reject)=>{
-            this._emitter.once(name,(data)=>{
-                resolve(fn(data));
+            this._emitter.once(name,(data,path)=>{
+                if(inScope(scope,path)){
+                    resolve(fn(data));
+                }
             });
         });
     }

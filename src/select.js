@@ -25,11 +25,14 @@ export default class Select {
     }
     
     update(fn){
-        let promise = this._fabric.once(this._path+'λupdate',()=>{
+        let promise = this._fabric.once('λupdate',()=>{
             this._fabric._set(fn(this.get()),this._path);
             return this.get();
+        }, {
+            type:'exact',
+            path:this._path
         });
-        this._fabric.emit(this._path+'λupdate',this.get());
+        this._fabric.emit('λupdate',this.get(),this._path);
         return promise;
     }
     

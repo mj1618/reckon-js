@@ -23,6 +23,18 @@ export function pathDiff(from,to){
     }
 }
 
+export function inScope(scope,path){
+    if(!scope){
+        return true;
+    }
+    
+    if(scope.type==='exact'){
+        return _.isEqual(scope.path,path);
+    }
+    
+    return false;
+}
+
 export function pathGet(data,path){
     try{
         path.forEach(p=>{
