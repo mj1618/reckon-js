@@ -9,7 +9,23 @@ export default class Select {
         this._path=path;
         this._initFilters();
         this._views = {};
+        this._beforeUpdate = 
+            this.before('λupdate',()=>{
+                if(this._fabric._updating){
+                    throw new Error('State is already updating');
+                }
+                this._fabric._updating=true;
+            });
+        this._afterUpdate = 
+            this.after('λupdate',()=>{
+                this._fabric._updating=false;
+            });
     }
+    
+    select(selector){
+        return this._fabric.select(this._path.concat(_.toPath(selector)));
+    }
+    
     _initFilters(){
         this.FILTER_EXACT = path=>_.isEqual(path,this._path);
         this.FILTER_SUB = path=>isSubPath(this._path,path);
@@ -22,6 +38,9 @@ export default class Select {
     
     get(path=[]){
         return this._fabric._get(this._path.concat(_.toPath(path)));
+    }
+    getJS(path=[]){
+        return this._fabric._getJS(this._path.concat(_.toPath(path)));
     }
     
     getRoot(){
@@ -80,23 +99,14 @@ export default class Select {
     }
     
     update(fn){
-        this.before('λupdate',()=>{
-            if(this._fabric._updating){
-                throw new Error('State is already updating');
-            }
-            this._fabric._updating=true;
-        });
         this.once('λupdate',()=>{
             this._fabric._set(fn(this.get()),this._path);
         });
-        this.after('λupdate',()=>{
-            this._fabric._updating=false;
-        })
-        this._fabric.emit('λupdate',this.get(),this._path);
+        this._fabric.emit('λupdate',null,this._path);
     }
     
     onUpdate(fn){
-        this._fabric.on('λupdated',(data) => {
+        return this._fabric.on('λupdated',(data) => {
                 if(
                     isSubPath(data.path,this._path) &&
                     !isRelativeEqual({

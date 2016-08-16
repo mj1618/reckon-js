@@ -204,7 +204,6 @@ describe('Fabric Select API',function(){
             
             let fruitsSelect = fabric.select('fruits');
             let fruitSelect = fabric.select('fruits[0]');
-            
             fruitSelect.onUpdate(data=>{
                 throw new Error('Update should not have been called as data has not changed: '+data);
             });
@@ -213,6 +212,27 @@ describe('Fabric Select API',function(){
                 return state.map(f=>f.name==='pear'?{name:'orange'}:f);
             });
         });
+        
+        
+        it('sub select',function(){
+            
+            let fabric = new Fabric({
+                fruits: [
+                    {name:'apple'},
+                    {name:'pear'}
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let fruitsSelect = fabric.select('fruits');
+            let fruitSelect = fruitsSelect.select('[0].name');
+            assert.equal(fruitSelect.get(),'apple');
+        });
+        
+        
         
         
         it('should fire update on root object change',function(done){

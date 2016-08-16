@@ -32,7 +32,11 @@ class Fabric extends Emitter {
     
     
     _getJS(path=[]){
-        return this._get(path).toJS();
+        let res = this._get(path);
+        if(res instanceof Object){
+            return res.toJS();
+        }
+        return res;
     }
     
     _set(data,path=[]){

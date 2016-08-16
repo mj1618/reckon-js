@@ -2,8 +2,9 @@
   "name": "state-fabric",
   "version": "0.0.1",
   "description": "JS Immutable State, Event and Action framework with cursors",
-  "main": "./dist/state-fabric.js",
+  "main": "./dist/fabric.min.js",
   "dependencies": {
+    "eslint-loader": "^1.5.0",
     "immutable": "^3.8.1",
     "lodash": "^4.15.0"
   },
@@ -19,12 +20,10 @@
     "uglify-js": "^2.6.1"
   },
   "scripts": {
-    "build": "mkdirp build && browserify ./src/fabric.js -t [babelify --loose all] -s Fabric -o ./build/fabric.js && uglifyjs ./build/fabric.js -c -m -o ./build/fabric.min.js && node ./scripts/banner.js",
-    "check": "npm test && npm run lint && npm run build",
-    "dist": "babel ./src --out-dir dist",
-    "lint": "eslint -c eslint.config.js ./src ./test",
+    "build": "npm test && mkdirp dist && browserify ./src/fabric.js -t [babelify --loose all] -s Fabric -o ./dist/fabric.js && uglifyjs ./dist/fabric.js -c -m -o ./dist/fabric.min.js",
     "prepublish": "npm run dist",
-    "test": "mocha -R spec --recursive    --compilers js:babel/register"
+    "test": "mocha -R spec --recursive --compilers js:babel/register",
+    "benchmark": "babel-node benchmark.js"
   },
   "author": {
     "name": "Matt James",
