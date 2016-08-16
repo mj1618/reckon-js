@@ -7,11 +7,16 @@ import Emitter from './emitter';
 
 class Fabric extends Emitter {
     
-    constructor(data){
+    constructor(data={},options={}){
         super();
         this._data = Immutable.fromJS(data);
         this._selects = {};
-        this.updating=false;
+        this._updating=false;
+        this._maxHistory = 0;
+        if(options.maxHistory){
+            this._maxHistory=options.maxHistory;
+        }
+        this._history = [];
     }
     
     select(selector){
@@ -39,17 +44,37 @@ class Fabric extends Emitter {
         return res;
     }
     
-    _set(data,path=[]){
+    _update(data,path=[],record=true){
         let old = this._get(path);
+        this._set(data,path);
+        this.emit('λupdated',{
+            path:path,
+            oldData:old
+        });
+        
+        if(record===true && this._history.length<this._maxHistory-1){
+            this._history.push({
+                path:path,
+                oldData:old
+            });
+        }
+    }
+    
+    _set(data,path=[]){
         if(path && path.length>0){
             this._data = this._get().merge(_.set({},path,data));
         } else {
             this._data = Immutable.fromJS(data);
         }
-        this.emit('λupdated',{
-            path:path,
-            oldData:old
-        });
+    }
+    
+    undo(){
+        if(this._history.length===0){
+            return false;
+        }
+        let last = this._history.pop();
+        this._set(last.oldData,last.path);
+        return true;
     }
 }
 

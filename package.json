@@ -1,7 +1,7 @@
 {
-  "name": "state-fabric",
+  "name": "fabric",
   "version": "0.0.1",
-  "description": "JS Immutable State, Event and Action framework with cursors",
+  "description": "Event-based, immutable state container for javascript apps with cursors and views",
   "main": "./dist/fabric.min.js",
   "dependencies": {
     "eslint-loader": "^1.5.0",
@@ -29,5 +29,19 @@
     "name": "Matt James",
     "url": "http://github.com/mj1618"
   },
-  "license": "MIT"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mj1618/fabric.git"
+  },
+  "keywords": [
+    "immutable",
+    "state",
+    "events",
+    "cursors"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mj1618/fabric/issues"
+  },
+  "homepage": "https://github.com/mj1618/fabric"
 }

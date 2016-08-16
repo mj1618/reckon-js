@@ -100,7 +100,7 @@ export default class Select {
     
     update(fn){
         this.once('λupdate',()=>{
-            this._fabric._set(fn(this.get()),this._path);
+            this._fabric._update(fn(this.get()),this._path);
         });
         this._fabric.emit('λupdate',null,this._path);
     }

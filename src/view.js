@@ -30,7 +30,11 @@ export default class View {
     }
     
     getJS(){
-        return this._data.toJS();
+        if(this._data instanceof Object){
+            return this._data.toJS();
+        } else {
+            return this._data;
+        }
     }
     
 }

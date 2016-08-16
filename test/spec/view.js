@@ -54,5 +54,26 @@ describe('Fabric View API',function(){
             
             
         });
+        
+        it('readme example',function(){
+            let fabric = new Fabric({
+                fruits:['apple','pear','banana'],
+                veges:['carrot','broccoli','celery']
+            });
+
+            let fruitCursor = fabric.select('fruits');
+            let fruitJoinView = fruitCursor.addView('Fruit join', fruits => fruits.join());
+            
+            fruitJoinView.onUpdate(newFruitJoin=>{
+                console.log("New fruit join: "+newFruitJoin);
+            });
+
+            fruitCursor.on('ADD_A_FRUIT', name => {
+                fruitCursor.update(fruitState => fruitState.push(name));
+            });
+
+            fruitCursor.emit('ADD_A_FRUIT','mandarin');
+            fruitCursor.emit('ADD_A_FRUIT','grape');
+        });
     });
 });
