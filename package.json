@@ -21,7 +21,7 @@
   },
   "scripts": {
     "build": "npm test && mkdirp dist && browserify ./src/fabric.js -t [babelify --loose all] -s Fabric -o ./dist/fabric.js && uglifyjs ./dist/fabric.js -c -m -o ./dist/fabric.min.js",
-    "prepublish": "npm run dist",
+    "clean": "rm -f dist/*.js",
     "test": "mocha -R spec --recursive --compilers js:babel/register",
     "benchmark": "babel-node benchmark.js"
   },
