@@ -1,15 +1,15 @@
 import assert from 'assert';
-import Fabric from '../../src/index';
+import Reckon from '../../src/index';
 import Immutable from 'immutable';
-describe('Fabric Select API',function(){
+describe('Reckon Select API',function(){
     describe('data',function(){
         
         it('should select data',function(){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruit:'apple'
             });
-            let fruitSelect = fabric.select('fruit');
+            let fruitSelect = reckon.select('fruit');
             
             assert(fruitSelect.get()==='apple','select not returning right data');
             
@@ -17,7 +17,7 @@ describe('Fabric Select API',function(){
         
         it('should select data',function(){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -28,7 +28,7 @@ describe('Fabric Select API',function(){
                 ]
             });
             
-            let fruitSelect = fabric.select('fruits[0]');
+            let fruitSelect = reckon.select('fruits[0]');
             
             assert(fruitSelect.get()==='apple','select not returning right data');
             
@@ -38,7 +38,7 @@ describe('Fabric Select API',function(){
     describe('data updates',function(){ 
         it('should update selected data',function(){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -49,7 +49,7 @@ describe('Fabric Select API',function(){
                 ]
             });
             
-            let fruitSelect = fabric.select('fruits[0]');
+            let fruitSelect = reckon.select('fruits[0]');
             
             fruitSelect.update(()=>{
                 return 'banana';
@@ -62,7 +62,7 @@ describe('Fabric Select API',function(){
         
         it('selector gets',function(){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -73,7 +73,7 @@ describe('Fabric Select API',function(){
                 ]
             });
             
-            let fruitSelect = fabric.select('fruits');
+            let fruitSelect = reckon.select('fruits');
             assert(fruitSelect.get().toJS()[0]==='apple','select get() returned wrong data');
             assert(fruitSelect.get('[0]')==='apple','select get() returned wrong data');
             assert(fruitSelect.getRoot().toJS().fruits[0]==='apple','select get() returned wrong data');
@@ -85,7 +85,7 @@ describe('Fabric Select API',function(){
     describe('updates',function(){
         it('should fire update on select object change',function(done){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -96,7 +96,7 @@ describe('Fabric Select API',function(){
                 ]
             });
             
-            let fruitSelect = fabric.select('fruits[0]');
+            let fruitSelect = reckon.select('fruits[0]');
             
             fruitSelect.onUpdate(data=>{
                 assert(data==='banana','select data did not fire update event and call listener');
@@ -113,7 +113,7 @@ describe('Fabric Select API',function(){
         
         it('should not fire update on select object same',function(){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -124,7 +124,7 @@ describe('Fabric Select API',function(){
                 ]
             });
             
-            let fruitSelect = fabric.select('fruits[0]');
+            let fruitSelect = reckon.select('fruits[0]');
             
             fruitSelect.onUpdate(data=>{
                 throw new Error('Update should not have been called as data has not changed: '+data);
@@ -138,7 +138,7 @@ describe('Fabric Select API',function(){
         
         it('should not fire update on select object same',function(){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -149,7 +149,7 @@ describe('Fabric Select API',function(){
                 ]
             });
             
-            let fruitSelect = fabric.select('fruits');
+            let fruitSelect = reckon.select('fruits');
             
             fruitSelect.onUpdate(()=>{
                 throw new Error('Update should not have been called as data has not changed: '+fruitSelect.get());
@@ -163,7 +163,7 @@ describe('Fabric Select API',function(){
         
         it('should not fire update on select object same',function(){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -174,8 +174,8 @@ describe('Fabric Select API',function(){
                 ]
             });
             
-            let fruitSelect = fabric.select('fruits');
-            let rootSelect = fabric.select();
+            let fruitSelect = reckon.select('fruits');
+            let rootSelect = reckon.select();
             
             fruitSelect.onUpdate(data=>{
                 throw new Error('Update should not have been called as data has not changed: '+data);
@@ -191,7 +191,7 @@ describe('Fabric Select API',function(){
         
         it('should not fire update on select object same',function(){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     {name:'apple'},
                     {name:'pear'}
@@ -202,8 +202,8 @@ describe('Fabric Select API',function(){
                 ]
             });
             
-            let fruitsSelect = fabric.select('fruits');
-            let fruitSelect = fabric.select('fruits[0]');
+            let fruitsSelect = reckon.select('fruits');
+            let fruitSelect = reckon.select('fruits[0]');
             fruitSelect.onUpdate(data=>{
                 throw new Error('Update should not have been called as data has not changed: '+data);
             });
@@ -216,7 +216,7 @@ describe('Fabric Select API',function(){
         
         it('sub select',function(){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     {name:'apple'},
                     {name:'pear'}
@@ -227,7 +227,7 @@ describe('Fabric Select API',function(){
                 ]
             });
             
-            let fruitsSelect = fabric.select('fruits');
+            let fruitsSelect = reckon.select('fruits');
             let fruitSelect = fruitsSelect.select('[0].name');
             assert.equal(fruitSelect.get(),'apple');
         });
@@ -237,7 +237,7 @@ describe('Fabric Select API',function(){
         
         it('should fire update on root object change',function(done){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -248,8 +248,8 @@ describe('Fabric Select API',function(){
                 ]
             });
             
-            let fruitSelect = fabric.select('fruits[0]');
-            let rootSelect = fabric.select();
+            let fruitSelect = reckon.select('fruits[0]');
+            let rootSelect = reckon.select();
             
             fruitSelect.onUpdate((data)=>{
                 assert(data==='banana','did not update data correctly');
@@ -274,12 +274,12 @@ describe('Fabric Select API',function(){
         
         it('nested updates shouldnt be allowed',function(){
             assert.throws(()=>{
-                let fabric = new Fabric({
+                let reckon = new Reckon({
                     fruit:'apple'
                 });
 
-                fabric.select().update((state)=>{
-                    fabric.select('fruit').update((state)=>{
+                reckon.select().update((state)=>{
+                    reckon.select('fruit').update((state)=>{
                         return 'second';
                     });
                     return 'third';

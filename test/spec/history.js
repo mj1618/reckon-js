@@ -1,12 +1,12 @@
 import assert from 'assert';
-import Fabric from '../../src/index';
+import Reckon from '../../src/index';
 import Immutable from 'immutable';
 import _ from 'lodash';
 describe('History API', function() {
 
     it('basic history',function(){
 
-        let fabric = new Fabric({
+        let reckon = new Reckon({
             fruits: [
                 'apple',
                 'pear'
@@ -16,28 +16,41 @@ describe('History API', function() {
                 'cucumber'
             ]
         }, {
-            maxHistory:10
+            maxHistory:3
         });
+        
+        
+        assert(reckon.select('fruits[0]').get()==='apple');
 
-        fabric.select('fruits').update(fruits=>{
+        reckon.select('fruits').update(fruits=>{
             return fruits.push('mandarin').remove(0);
         });
         
-        fabric.select().update(state=>{
+        assert(reckon.select('fruits[0]').get()==='pear');
+        
+        reckon.select().update(state=>{
             return state.set("fruits",null);
         });
         
-        fabric.select().update(state=>{
+        assert(reckon.select('fruits').get()===null);
+        
+        reckon.select().update(state=>{
             return {};
         });
         
-        assert(fabric.select().get().fruits===undefined);
+        assert(reckon.select().get().fruits===undefined);
         
-        fabric.undo();
-        fabric.undo();
-        fabric.undo();
+        reckon.undo();
         
-        assert(fabric.select('fruits[0]').get()==='apple');
+        assert(reckon.select('fruits').get()===null);
+        
+        reckon.undo();
+        
+        assert(reckon.select('fruits[0]').get()==='pear');
+        
+        reckon.undo();
+        
+        assert(reckon.select('fruits[0]').get()==='apple');
 
     });
 });

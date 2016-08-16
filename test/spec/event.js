@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Fabric from '../../src/index';
+import Reckon from '../../src/index';
 import Immutable from 'immutable';
 import _ from 'lodash';
 describe('Events API', function() {
@@ -8,7 +8,7 @@ describe('Events API', function() {
       
         it('removing',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -19,18 +19,18 @@ describe('Events API', function() {
                 ]
             });
             
-            let remover = fabric.select().on('TEST_EVENT',()=>{
+            let remover = reckon.select().on('TEST_EVENT',()=>{
                 throw new Error('should not have called this listener');
             });
             
             remover();
             
-            fabric.select().emit('TEST_EVENT');
+            reckon.select().emit('TEST_EVENT');
             
         });
         it('removing with off',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -43,17 +43,17 @@ describe('Events API', function() {
             let fn = ()=>{
                 throw new Error('should not have called this listener');
             };
-            fabric.select().on('TEST_EVENT',fn);
+            reckon.select().on('TEST_EVENT',fn);
             
-            fabric.select().off('TEST_EVENT',fn);
+            reckon.select().off('TEST_EVENT',fn);
             
-            fabric.select().emit('TEST_EVENT');
+            reckon.select().emit('TEST_EVENT');
             
         });
         
         it('doesnt remove',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -67,11 +67,11 @@ describe('Events API', function() {
             let fn = ()=>{
                 n+=1;
             };
-            fabric.select().on('TEST_EVENT',fn);
+            reckon.select().on('TEST_EVENT',fn);
             
-            fabric.select().off('TEST_EVENT',fn,fabric.select().FILTER_SUB);
+            reckon.select().off('TEST_EVENT',fn,reckon.select().FILTER_SUB);
             
-            fabric.select().emit('TEST_EVENT');
+            reckon.select().emit('TEST_EVENT');
             
             assert.equal(n,1,'listener wasnt called');
             
@@ -79,7 +79,7 @@ describe('Events API', function() {
         
         it('unique listeners',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -98,16 +98,16 @@ describe('Events API', function() {
                 n+=1;
             };
             
-            fabric.select().on('TEST_EVENT',fn);
-            fabric.select().on('TEST_EVENT',fn);
-            fabric.select().emit('TEST_EVENT');
+            reckon.select().on('TEST_EVENT',fn);
+            reckon.select().on('TEST_EVENT',fn);
+            reckon.select().emit('TEST_EVENT');
             
         });
         
         
         it('slightly different listeners',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -124,9 +124,9 @@ describe('Events API', function() {
                 n+=1;
             };
             
-            fabric.select().on('TEST_EVENT',fn);
-            fabric.select().on('TEST_EVENT',fn,fabric.select().FILTER_SUB);
-            fabric.select().emit('TEST_EVENT');
+            reckon.select().on('TEST_EVENT',fn);
+            reckon.select().on('TEST_EVENT',fn,reckon.select().FILTER_SUB);
+            reckon.select().emit('TEST_EVENT');
             
             assert.equal(2,n,'n should have been 2, actually was: '+n);
             
@@ -135,7 +135,7 @@ describe('Events API', function() {
         
         it('once',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -148,19 +148,19 @@ describe('Events API', function() {
             
             let n = 0;
             
-            fabric.select().once('TEST_EVENT',()=>{
+            reckon.select().once('TEST_EVENT',()=>{
                 n+=1;
             });
             
-            fabric.select().emit('TEST_EVENT');
-            fabric.select().emit('TEST_EVENT');
+            reckon.select().emit('TEST_EVENT');
+            reckon.select().emit('TEST_EVENT');
             assert.equal(1,n,'n should have been 1, actually was: '+n);
         });
         
         
         it('before',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -173,20 +173,20 @@ describe('Events API', function() {
             
             let order=[];
             
-            fabric.select().on('TEST_EVENT',()=>{
+            reckon.select().on('TEST_EVENT',()=>{
                 order.push('b');
             });
-            fabric.select().before('TEST_EVENT',()=>{
+            reckon.select().before('TEST_EVENT',()=>{
                 order.push('a');
             });
-            fabric.select().emit('TEST_EVENT');
+            reckon.select().emit('TEST_EVENT');
             assert(_.isEqual(order,['a','b']),'events fired in wrong order');
             
         });
         
         it('before',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -199,20 +199,20 @@ describe('Events API', function() {
             
             let order=[];
             
-            fabric.select().before('TEST_EVENT',()=>{
+            reckon.select().before('TEST_EVENT',()=>{
                 order.push('a');
             });
-            fabric.select().on('TEST_EVENT',()=>{
+            reckon.select().on('TEST_EVENT',()=>{
                 order.push('b');
             });
-            fabric.select().emit('TEST_EVENT');
+            reckon.select().emit('TEST_EVENT');
             assert(_.isEqual(order,['a','b']),'events fired in wrong order');
             
         });
         
         it('after',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -225,20 +225,20 @@ describe('Events API', function() {
             
             let order=[];
             
-            fabric.select().on('TEST_EVENT',()=>{
+            reckon.select().on('TEST_EVENT',()=>{
                 order.push('a');
             });
-            fabric.select().after('TEST_EVENT',()=>{
+            reckon.select().after('TEST_EVENT',()=>{
                 order.push('b');
             });
-            fabric.select().emit('TEST_EVENT');
+            reckon.select().emit('TEST_EVENT');
             assert(_.isEqual(order,['a','b']),'events fired in wrong order');
             
         });
         
         it('after',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -251,13 +251,13 @@ describe('Events API', function() {
             
             let order=[];
             
-            fabric.select().after('TEST_EVENT',()=>{
+            reckon.select().after('TEST_EVENT',()=>{
                 order.push('b');
             });
-            fabric.select().on('TEST_EVENT',()=>{
+            reckon.select().on('TEST_EVENT',()=>{
                 order.push('a');
             });
-            fabric.select().emit('TEST_EVENT');
+            reckon.select().emit('TEST_EVENT');
             assert(_.isEqual(order,['a','b']),'events fired in wrong order');
             
         });
@@ -265,7 +265,7 @@ describe('Events API', function() {
         
         it('clear',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -276,18 +276,18 @@ describe('Events API', function() {
                 ]
             });
             
-            fabric.select().on('TEST_EVENT',()=>{
+            reckon.select().on('TEST_EVENT',()=>{
                 throw new Error('should not have been called');
             });
             
-            fabric.select().clear('TEST_EVENT');
-            fabric.select().emit('TEST_EVENT');
+            reckon.select().clear('TEST_EVENT');
+            reckon.select().emit('TEST_EVENT');
             
         });
         
         it('clearAll',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -298,12 +298,12 @@ describe('Events API', function() {
                 ]
             });
             
-            fabric.select().on('TEST_EVENT',()=>{
+            reckon.select().on('TEST_EVENT',()=>{
                 throw new Error('should not have been called');
             });
             
-            fabric.select().clearAll();
-            fabric.select().emit('TEST_EVENT');
+            reckon.select().clearAll();
+            reckon.select().emit('TEST_EVENT');
             
         });
         

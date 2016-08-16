@@ -1,8 +1,8 @@
 {
-  "name": "fabric",
+  "name": "reckon",
   "version": "0.0.1",
   "description": "Event-based, immutable state container for javascript apps with cursors and views",
-  "main": "./dist/fabric.min.js",
+  "main": "./dist/reckon.min.js",
   "dependencies": {
     "eslint-loader": "^1.5.0",
     "immutable": "^3.8.1",
@@ -20,7 +20,7 @@
     "uglify-js": "^2.6.1"
   },
   "scripts": {
-    "build": "npm test && mkdirp dist && browserify ./src/fabric.js -t [babelify --loose all] -s Fabric -o ./dist/fabric.js && uglifyjs ./dist/fabric.js -c -m -o ./dist/fabric.min.js",
+    "build": "npm test && mkdirp dist && browserify ./src/reckon.js -t [babelify --loose all] -s Reckon -o ./dist/reckon.js && uglifyjs ./dist/reckon.js -c -m -o ./dist/reckon.min.js",
     "clean": "rm -f dist/*.js",
     "test": "mocha -R spec --recursive --compilers js:babel/register",
     "benchmark": "babel-node benchmark.js"
@@ -31,7 +31,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mj1618/fabric.git"
+    "url": "https://github.com/mj1618/reckon.git"
   },
   "keywords": [
     "immutable",
@@ -41,7 +41,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mj1618/fabric/issues"
+    "url": "https://github.com/mj1618/reckon/issues"
   },
-  "homepage": "https://github.com/mj1618/fabric"
+  "homepage": "https://github.com/mj1618/reckon"
 }

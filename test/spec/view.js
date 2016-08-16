@@ -1,16 +1,16 @@
 import assert from 'assert';
-import Fabric from '../../src/index';
+import Reckon from '../../src/index';
 import Immutable from 'immutable';
-describe('Fabric View API',function(){
+describe('Reckon View API',function(){
     describe('create',function(){
         
         it('created',function(){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruit:'apple'
             });
             
-            let view = fabric.select().addView('fruit_view',data=>data.get('fruit'));
+            let view = reckon.select().addView('fruit_view',data=>data.get('fruit'));
             
             assert(view.get()==='apple');
             
@@ -18,13 +18,13 @@ describe('Fabric View API',function(){
         
         it('check view updates',function(){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruit:'apple'
             });
             
-            let view = fabric.select().addView('fruit_view',data=>data.get('fruit'));
+            let view = reckon.select().addView('fruit_view',data=>data.get('fruit'));
             
-            fabric.select().update(()=>{
+            reckon.select().update(()=>{
                 return {
                     fruit:'pear'
                 }
@@ -36,17 +36,17 @@ describe('Fabric View API',function(){
         
         it('check view onupdate',function(done){
             
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruit:'apple'
             });
             
-            let view = fabric.select().addView('fruit_view',data=>data.get('fruit'));
+            let view = reckon.select().addView('fruit_view',data=>data.get('fruit'));
             view.onUpdate(data=>{
                 assert(data==='pear');
                 done();
             });
             
-            fabric.select().update(()=>{
+            reckon.select().update(()=>{
                 return {
                     fruit:'pear'
                 }
@@ -56,12 +56,12 @@ describe('Fabric View API',function(){
         });
         
         it('readme example',function(){
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits:['apple','pear','banana'],
                 veges:['carrot','broccoli','celery']
             });
 
-            let fruitCursor = fabric.select('fruits');
+            let fruitCursor = reckon.select('fruits');
             let fruitJoinView = fruitCursor.addView('Fruit join', fruits => fruits.join());
             
             fruitJoinView.onUpdate(newFruitJoin=>{

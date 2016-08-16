@@ -1,13 +1,13 @@
 import assert from 'assert';
-import Fabric from '../../src/index';
+import Reckon from '../../src/index';
 import Immutable from 'immutable';
-describe('Fabric API', function() {
+describe('Reckon API', function() {
 
     describe('constructor', function() {
       
         it('constructor data',function(){
           
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruits: [
                     'apple',
                     'pear'
@@ -18,29 +18,29 @@ describe('Fabric API', function() {
                 ]
             });
             
-            assert(fabric._getJS().fruits[0] === 'apple', 'immutable data not initialised properly');
-            assert.throws(()=>fabric._get().fruits[0] = 'banana', 'not immutable');
+            assert(reckon._getJS().fruits[0] === 'apple', 'immutable data not initialised properly');
+            assert.throws(()=>reckon._get().fruits[0] = 'banana', 'not immutable');
             
         });
     });
     describe('base events',function(){
         it('check events',function(done){
-            let fabric = new Fabric({
+            let reckon = new Reckon({
                 fruit:'apple'
             });
-            fabric.on('CHANGE_FRUIT',()=>{
-                assert(fabric.select().get().get('fruit') == 'apple', 'wasnt passed state');
-                fabric.select().update(() => {
+            reckon.on('CHANGE_FRUIT',()=>{
+                assert(reckon.select().get().get('fruit') == 'apple', 'wasnt passed state');
+                reckon.select().update(() => {
                     return {
                         fruit:'pear'
                     };
                 });
             });
-            fabric.on('λupdated',()=>{
-                assert(fabric.select().get().toJS().fruit=='pear','not updated');
+            reckon.on('λupdated',()=>{
+                assert(reckon.select().get().toJS().fruit=='pear','not updated');
                 done();
             });
-            fabric.emit('CHANGE_FRUIT');
+            reckon.emit('CHANGE_FRUIT');
         });
 
     });

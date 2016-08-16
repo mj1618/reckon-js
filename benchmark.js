@@ -1,9 +1,9 @@
 var Benchmark = require('benchmark'),
-    Fabric = require('./');
+    Reckon = require('./');
 
 var suite = new Benchmark.Suite();
 
-var fabric = new Fabric({
+var reckon = new Reckon({
     a:{
         b:{
             c:{
@@ -21,21 +21,21 @@ var fabric = new Fabric({
 });
 
 
-var fabricArr = new Fabric(['a','b','c','d','e','f','g','h']);
+var reckonArr = new Reckon(['a','b','c','d','e','f','g','h']);
 
-var rootCursor = fabric.select();
-var cursor = fabric.select('a.b.c.d.e.f');
+var rootCursor = reckon.select();
+var cursor = reckon.select('a.b.c.d.e.f');
 
 suite
-  .add('Fabric#select', function() {
-    fabric.select();
-    fabric.select('a.b.c.d.e.f');
+  .add('Reckon#select', function() {
+    reckon.select();
+    reckon.select('a.b.c.d.e.f');
   })
-  .add('Fabric#get', function() {
+  .add('Reckon#get', function() {
     rootCursor.get('a.b.c.d.e.f');
     cursor.get();
   })
-  .add('Fabric.Root#update', function() {
+  .add('Reckon.Root#update', function() {
     rootCursor.update(()=>{
         return {
             g:'g2',
@@ -55,24 +55,24 @@ suite
         };
     });
   })
-  .add('Fabric.Root#set', function() {
+  .add('Reckon.Root#set', function() {
     rootCursor.update(state=>{
         return state.set('g','g2');
     });
   })
-  .add('Fabric.Root#delete', function() {
+  .add('Reckon.Root#delete', function() {
     rootCursor.update(state=>{
         return state.delete('g');
     });
   })
-  .add('FabricArr.Root#push', function() {
-    fabricArr.select().update(state=>{
+  .add('ReckonArr.Root#push', function() {
+    reckonArr.select().update(state=>{
         return state.push('i');
     });
   })
-  .add('Fabric.cursor#set', function() {
+  .add('Reckon.cursor#set', function() {
     cursor.update(()=>{
-        return 'fabric';
+        return 'reckon';
     });
   })
   .on('cycle', function(event) {
@@ -91,8 +91,8 @@ suite
 //Baobab.Cursor#unshift x 353 ops/sec ±8.82% (69 runs sampled)
 //Baobab.Cursor#splice x 198 ops/sec ±6.49% (70 runs sampled)
 
-//Fabric#select x 320,228 ops/sec ±0.93% (91 runs sampled)
-//Fabric#get x 338,584 ops/sec ±0.94% (90 runs sampled)
-//Fabric#get2 x 340,872 ops/sec ±0.96% (92 runs sampled)
-//Fabric.Root#set x 31,069 ops/sec ±4.10% (82 runs sampled)
-//Fabric.cursor#set x 26,116 ops/sec ±3.79% (76 runs sampled)
+//Reckon#select x 320,228 ops/sec ±0.93% (91 runs sampled)
+//Reckon#get x 338,584 ops/sec ±0.94% (90 runs sampled)
+//Reckon#get2 x 340,872 ops/sec ±0.96% (92 runs sampled)
+//Reckon.Root#set x 31,069 ops/sec ±4.10% (82 runs sampled)
+//Reckon.cursor#set x 26,116 ops/sec ±3.79% (76 runs sampled)

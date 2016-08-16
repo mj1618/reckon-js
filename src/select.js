@@ -4,26 +4,26 @@ import View from './view';
 
 export default class Select {
     
-    constructor(fabric,path=[]){
-        this._fabric=fabric;
+    constructor(reckon,path=[]){
+        this._reckon=reckon;
         this._path=path;
         this._initFilters();
         this._views = {};
         this._beforeUpdate = 
             this.before('λupdate',()=>{
-                if(this._fabric._updating){
+                if(this._reckon._updating){
                     throw new Error('State is already updating');
                 }
-                this._fabric._updating=true;
+                this._reckon._updating=true;
             });
         this._afterUpdate = 
             this.after('λupdate',()=>{
-                this._fabric._updating=false;
+                this._reckon._updating=false;
             });
     }
     
     select(selector){
-        return this._fabric.select(this._path.concat(_.toPath(selector)));
+        return this._reckon.select(this._path.concat(_.toPath(selector)));
     }
     
     _initFilters(){
@@ -37,21 +37,21 @@ export default class Select {
     }
     
     get(path=[]){
-        return this._fabric._get(this._path.concat(_.toPath(path)));
+        return this._reckon._get(this._path.concat(_.toPath(path)));
     }
     getJS(path=[]){
-        return this._fabric._getJS(this._path.concat(_.toPath(path)));
+        return this._reckon._getJS(this._path.concat(_.toPath(path)));
     }
     
     getRoot(){
-        return this._fabric._get();
+        return this._reckon._get();
     }
     
     getParent(){
         if(this._path.length==0){
             return null;
         } else {
-            return this._fabric._get(this._path.slice(0,this._path.length-1));
+            return this._reckon._get(this._path.slice(0,this._path.length-1));
         }
     }
     
@@ -69,44 +69,44 @@ export default class Select {
     }
     
     emit(name,data=null){
-        this._fabric.emit(name,data,this._path);
+        this._reckon.emit(name,data,this._path);
     }
     
     on(name,fn,filter=this.FILTER_EXACT){
-        return this._fabric.on(name,fn,filter);
+        return this._reckon.on(name,fn,filter);
     }
     
     before(name,fn,filter=this.FILTER_EXACT){
-        return this._fabric.before(name,fn,filter);
+        return this._reckon.before(name,fn,filter);
     }
     
     after(name,fn,filter=this.FILTER_EXACT){
-        return this._fabric.after(name,fn,filter);
+        return this._reckon.after(name,fn,filter);
     }
     
     off(name,fn,filter=null){
-        return this._fabric.off(name,fn,filter);
+        return this._reckon.off(name,fn,filter);
     }
     
     once(name,fn,filter=this.FILTER_EXACT){
-        return this._fabric.once(name,fn,filter);
+        return this._reckon.once(name,fn,filter);
     }
     clear(name){
-        return this._fabric.clear(name);
+        return this._reckon.clear(name);
     }
     clearAll(){
-        return this._fabric.clearAll();
+        return this._reckon.clearAll();
     }
     
     update(fn){
         this.once('λupdate',()=>{
-            this._fabric._update(fn(this.get()),this._path);
+            this._reckon._update(fn(this.get()),this._path);
         });
-        this._fabric.emit('λupdate',null,this._path);
+        this._reckon.emit('λupdate',null,this._path);
     }
     
     onUpdate(fn){
-        return this._fabric.on('λupdated',(data) => {
+        return this._reckon.on('λupdated',(data) => {
                 if(
                     isSubPath(data.path,this._path) &&
                     !isRelativeEqual({

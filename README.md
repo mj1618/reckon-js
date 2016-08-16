@@ -1,9 +1,9 @@
-# Fabric [![Build Status](https://travis-ci.org/mj1618/fabric.svg)](https://travis-ci.org/mj1618/fabric)
+# Reckon [![Build Status](https://travis-ci.org/mj1618/reckon.svg)](https://travis-ci.org/mj1618/reckon)
 
 
-**Fabric** is an event-based, immutable state container for javascript apps. Fabric manages state as [Facebook Immutable](https://facebook.github.io/immutable-js/) objects. Fabric provides cursors, views and scoped events so that a single Fabric instance can be used for all state in an application.
+**Reckon** is an event-based, immutable state container for javascript apps. Reckon manages state as [Facebook Immutable](https://facebook.github.io/immutable-js/) objects. Reckon provides cursors, views and scoped events so that a single Reckon instance can be used for all state in an application.
 
-Fabric is influenced by the following projects and programming paradigms and ideas:
+Reckon is influenced by the following projects and programming paradigms and ideas:
 * [Baobab](https://github.com/Yomguithereal/baobab)
 * [Redux](https://github.com/reactjs/redux)
 * [Flux](https://facebook.github.io/flux/)
@@ -14,12 +14,12 @@ Fabric is influenced by the following projects and programming paradigms and ide
 ## Example
 
 ```js
-let fabric = new Fabric({
+let reckon = new Reckon({
     fruits:['apple','pear','banana'],
     veges:['carrot','broccoli','celery']
 });
 
-let fruitCursor = fabric.select('fruits');
+let fruitCursor = reckon.select('fruits');
 let fruitJoinView = fruitCursor.addView('Fruit join', fruits => fruits.join());
 
 fruitJoinView.onUpdate(newFruitJoin=>{
@@ -52,7 +52,7 @@ git+https://github.com/Yomguithereal/baobab.git
 
 Download the latest stable version of the script:
 ```sh
-[here](https://raw.githubusercontent.com/mj1618/fabric/master/dist/fabric.min.js)
+[here](https://raw.githubusercontent.com/mj1618/reckon/master/dist/reckon.min.js)
 ```
 
 

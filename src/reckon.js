@@ -5,7 +5,7 @@ import Select from './select';
 import {pathGet,inScope} from './helpers';
 import Emitter from './emitter';
 
-class Fabric extends Emitter {
+class Reckon extends Emitter {
     
     constructor(data={},options={}){
         super();
@@ -52,7 +52,7 @@ class Fabric extends Emitter {
             oldData:old
         });
         
-        if(record===true && this._history.length<this._maxHistory-1){
+        if(record===true && this._history.length<this._maxHistory){
             this._history.push({
                 path:path,
                 oldData:old
@@ -78,4 +78,4 @@ class Fabric extends Emitter {
     }
 }
 
-export default Fabric;
+export default Reckon;

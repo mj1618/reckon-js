@@ -1,7 +1,7 @@
-import Fabric from './fabric';
+import Reckon from './reckon';
 import {scopes} from './helpers';
 
-export default Fabric;
+export default Reckon;
 export {
     scopes
 };
