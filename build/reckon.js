@@ -22036,10 +22036,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _immutable = require('immutable');
-
-var _immutable2 = _interopRequireDefault(_immutable);
-
 var _events = require('events');
 
 var _events2 = _interopRequireDefault(_events);
@@ -22048,6 +22044,8 @@ var _filter = require('./filter');
 
 var _filter2 = _interopRequireDefault(_filter);
 
+var _helpers = require('./helpers');
+
 var actions = {
     ON: 'ON',
     BEFORE: 'BEFORE',
@@ -22055,11 +22053,12 @@ var actions = {
 };
 
 var Emitter = (function () {
-    function Emitter() {
+    function Emitter(reckon) {
         _classCallCheck(this, Emitter);
 
         this._emitter = new _events2['default']();
         this._ons = {};
+        this._reckon = reckon;
     }
 
     Emitter.prototype._handle = function _handle(type, data, emitPath) {
@@ -22081,9 +22080,9 @@ var Emitter = (function () {
             return on.action === actions.AFTER;
         });
         befores.concat(ons).concat(afters).map(function (on) {
-            var ret = on.fn(data, _this._get(emitPath), emitPath);
+            var ret = on.fn(data, _this._reckon._get(emitPath), emitPath);
             if (ret !== undefined) {
-                _this._set(ret, on.listenPath);
+                _this._reckon._set(ret, on.listenPath);
             }
             if (on.n > 0) {
                 on.n -= 1;
@@ -22104,8 +22103,8 @@ var Emitter = (function () {
         var n = arguments.length <= 4 || arguments[4] === undefined ? -1 : arguments[4];
         var action = arguments.length <= 5 || arguments[5] === undefined ? actions.ON : arguments[5];
 
-        if (this.has(type, fn, listenPath, filter)) {
-            return this.getRemover(type, fn, listenPath, filter);
+        if (this._has(type, fn, listenPath, filter)) {
+            return this.getRemovers(type, fn, listenPath, filter);
         } else {
             if (!this._ons[type]) {
                 this._ons[type] = [];
@@ -22122,11 +22121,11 @@ var Emitter = (function () {
                 action: action,
                 listenPath: listenPath
             });
-            return this.getRemover(type, fn, listenPath, filter);
+            return this.getRemovers(type, fn, listenPath, filter);
         }
     };
 
-    Emitter.prototype.getRemover = function getRemover(type, fn, listenPath) {
+    Emitter.prototype.getRemovers = function getRemovers(type, fn, listenPath) {
         var _this3 = this;
 
         var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
@@ -22145,14 +22144,32 @@ var Emitter = (function () {
     };
 
     Emitter.prototype.clear = function clear(type) {
-        this._ons[type] = [];
+        var path = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+        if (path === null) {
+            this._ons[type] = [];
+        } else {
+            this._ons[type] = this._ons[type].filter(function (on) {
+                return !_helpers.isPathsEqual(on.listenPath, path);
+            });
+        }
     };
 
     Emitter.prototype.clearAll = function clearAll() {
-        this._ons = {};
+        var _this4 = this;
+
+        var path = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+        Object.keys(this._ons).forEach(function (type) {
+            _this4.clear(type, path);
+        });
     };
 
-    Emitter.prototype.has = function has(type, fn, listenPath) {
+    Emitter.prototype.getAllEventTypes = function getAllEventTypes() {
+        return Object.keys(this._ons);
+    };
+
+    Emitter.prototype._has = function _has(type, fn, listenPath) {
         var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
 
         return this._ons[type] && this._ons[type].some(function (a) {
@@ -22163,7 +22180,7 @@ var Emitter = (function () {
     Emitter.prototype.off = function off(type, fn, listenPath) {
         var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
 
-        var remover = this.getRemover(type, fn, listenPath, filter);
+        var remover = this.getRemovers(type, fn, listenPath, filter);
         if (remover) {
             remover();
             return true;
@@ -22196,17 +22213,13 @@ var Emitter = (function () {
 exports['default'] = Emitter;
 module.exports = exports['default'];
 
-},{"./filter":5,"events":1,"immutable":2}],5:[function(require,module,exports){
+},{"./filter":5,"./helpers":6,"events":1}],5:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
 exports['default'] = filterPath;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
+var _helpers = require('./helpers');
 
 var filterTypes = ['SUB', 'SUPER', 'ANY', 'ROOT', 'CURRENT', 'SUB_EXCLUSIVE', 'SUPER_EXCLUSIVE', 'AFFECTED'].reduce(function (m, v) {
     m[v] = v;return m;
@@ -22214,48 +22227,33 @@ var filterTypes = ['SUB', 'SUPER', 'ANY', 'ROOT', 'CURRENT', 'SUB_EXCLUSIVE', 'S
 
 exports.filterTypes = filterTypes;
 
-function isSuper(a, b) {
-    return a === null || b !== null && _lodash2['default'].isEqual(a, b.slice(0, a.length));
-}
-function isSub(a, b) {
-    return b === null || a !== null && _lodash2['default'].isEqual(b, a.slice(0, b.length));
-}
-
-function isRoot(a, b) {
-    return a === null || a.length === 0;
-}
-
-function isEqual(a, b) {
-    return _lodash2['default'].isEqual(a, b);
-}
-
 function filterPath(f) {
     var a = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
     var b = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
 
     switch (f) {
         case 'SUPER':
-            return isSuper(a, b);
+            return _helpers.isSuper(a, b);
         case 'SUB':
-            return isSub(a, b);
+            return _helpers.isSub(a, b);
         case 'ANY':
             return true;
         case 'AFFECTED':
-            return isSuper(a, b) || isSub(a, b);
+            return _helpers.isSuper(a, b) || _helpers.isSub(a, b);
         case 'ROOT':
-            return isRoot(a, b);
+            return _helpers.isRoot(a, b);
         case 'CURRENT':
-            return isEqual(a, b);
+            return _helpers.isPathsEqual(a, b);
         case 'SUPER_EXCLUSIVE':
-            return !isEqual(a, b) && isSuper(a, b);
+            return !_helpers.isPathsEqual(a, b) && _helpers.isSuper(a, b);
         case 'SUB_EXCLUSIVE':
-            return !isEqual(a, b) && isSub(a, b);
+            return !_helpers.isPathsEqual(a, b) && _helpers.isSub(a, b);
         default:
             return false;
     }
 }
 
-},{"lodash":3}],6:[function(require,module,exports){
+},{"./helpers":6}],6:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22263,6 +22261,10 @@ exports.isSubPath = isSubPath;
 exports.pathDiff = pathDiff;
 exports.pathGet = pathGet;
 exports.relativeData = relativeData;
+exports.isSuper = isSuper;
+exports.isSub = isSub;
+exports.isRoot = isRoot;
+exports.isPathsEqual = isPathsEqual;
 exports.isRelativeEqual = isRelativeEqual;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -22317,6 +22319,26 @@ function relativeData(data, from, to) {
     }
 }
 
+function isSuper(a, b) {
+    return a === null || b !== null && _lodash2['default'].isEqual(a, b.slice(0, a.length));
+}
+
+function isSub(a, b) {
+    return b === null || a !== null && _lodash2['default'].isEqual(b, a.slice(0, b.length));
+}
+
+function isRoot(a) {
+    return a === null || a.length === 0;
+}
+
+function isPathsEqual(a, b) {
+    if (isRoot(a)) {
+        return isRoot(b);
+    } else {
+        return _lodash2['default'].isEqual(a, b);
+    }
+}
+
 function isRelativeEqual(a, b) {
 
     if (!isSubPath(a.path, b.path)) {
@@ -22325,7 +22347,7 @@ function isRelativeEqual(a, b) {
             a = _ref[0];
             b = _ref[1];
         } else {
-            return false;
+            return _immutable2['default'].is(a.data, b.data);
         }
     }
     var aData = relativeData(a.data, a.path, b.path);
@@ -22341,8 +22363,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 var _immutable = require('immutable');
 
 var _immutable2 = _interopRequireDefault(_immutable);
@@ -22357,20 +22377,19 @@ var _select2 = _interopRequireDefault(_select);
 
 var _helpers = require('./helpers');
 
-var _emitter = require('./emitter');
+var _emitter2 = require('./emitter');
 
-var _emitter2 = _interopRequireDefault(_emitter);
+var _emitter3 = _interopRequireDefault(_emitter2);
 
-var Reckon = (function (_Emitter) {
-    _inherits(Reckon, _Emitter);
-
+var Reckon = (function () {
     function Reckon() {
+        var _this = this;
+
         var data = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
         var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
         _classCallCheck(this, Reckon);
 
-        _Emitter.call(this);
         this._data = _immutable2['default'].fromJS(data);
         this._selects = {};
         this._updating = false;
@@ -22379,6 +22398,24 @@ var Reckon = (function (_Emitter) {
             this._maxHistory = options.maxHistory;
         }
         this._history = [];
+        this._emitter = new _emitter3['default'](this);
+        ['on', 'before', 'after', 'once', 'emit', 'getRemover', 'clear', 'clearAll', 'off', 'getAllEventTypes'].forEach(function (fn) {
+            _this['_' + fn] = function () {
+                var _emitter;
+
+                return (_emitter = _this._emitter)[fn].apply(_emitter, arguments);
+            };
+        });
+
+        this._rootSelect = this.select();
+
+        ['addView', 'update', 'onUpdate', 'get', 'on', 'before', 'after', 'once', 'emit', 'getRemover', 'clear', 'clearAll', 'off'].forEach(function (fn) {
+            _this[fn] = function () {
+                var _rootSelect;
+
+                return (_rootSelect = _this._rootSelect)[fn].apply(_rootSelect, arguments);
+            };
+        });
     }
 
     Reckon.prototype.select = function select(selector) {
@@ -22415,7 +22452,7 @@ var Reckon = (function (_Emitter) {
 
         var old = this._get(path);
         this._set(data, path);
-        this.emit('λupdated', {
+        this._emit('λupdated', {
             path: path,
             oldData: old
         });
@@ -22448,7 +22485,7 @@ var Reckon = (function (_Emitter) {
     };
 
     return Reckon;
-})(_emitter2['default']);
+})();
 
 exports['default'] = Reckon;
 module.exports = exports['default'];
@@ -22540,45 +22577,49 @@ var Select = (function () {
     Select.prototype.emit = function emit(name) {
         var data = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
-        this._reckon.emit(name, data, this._path);
+        this._reckon._emit(name, data, this._path);
     };
 
     Select.prototype.on = function on(name, fn) {
         var filter = arguments.length <= 2 || arguments[2] === undefined ? _filter.filterTypes.CURRENT : arguments[2];
 
-        return this._reckon.on(name, fn, this._path, filter);
+        return this._reckon._on(name, fn, this._path, filter);
     };
 
     Select.prototype.before = function before(name, fn) {
         var filter = arguments.length <= 2 || arguments[2] === undefined ? _filter.filterTypes.CURRENT : arguments[2];
 
-        return this._reckon.before(name, fn, this._path, filter);
+        return this._reckon._before(name, fn, this._path, filter);
     };
 
     Select.prototype.after = function after(name, fn) {
         var filter = arguments.length <= 2 || arguments[2] === undefined ? _filter.filterTypes.CURRENT : arguments[2];
 
-        return this._reckon.after(name, fn, this._path, filter);
+        return this._reckon._after(name, fn, this._path, filter);
     };
 
     Select.prototype.off = function off(name, fn) {
         var filter = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
 
-        return this._reckon.off(name, fn, this._path, filter);
+        return this._reckon._off(name, fn, this._path, filter);
     };
 
     Select.prototype.once = function once(name, fn) {
         var filter = arguments.length <= 2 || arguments[2] === undefined ? _filter.filterTypes.CURRENT : arguments[2];
 
-        return this._reckon.once(name, fn, this._path, filter);
+        return this._reckon._once(name, fn, this._path, filter);
     };
 
     Select.prototype.clear = function clear(name) {
-        return this._reckon.clear(name);
+        return this._reckon._clear(name, this._path);
+    };
+
+    Select.prototype.getAllEventTypes = function getAllEventTypes() {
+        return this._reckon._getAllEventTypes();
     };
 
     Select.prototype.clearAll = function clearAll() {
-        return this._reckon.clearAll();
+        return this._reckon._clearAll();
     };
 
     Select.prototype.update = function update(fn) {
@@ -22587,7 +22628,7 @@ var Select = (function () {
         this.once('λupdate', function () {
             _this2._reckon._update(fn(_this2.get()), _this2._path);
         });
-        this._reckon.emit('λupdate', null, this._path);
+        this._reckon._emit('λupdate', null, this._path);
     };
 
     Select.prototype.onUpdate = function onUpdate(fn) {
@@ -22601,7 +22642,7 @@ var Select = (function () {
                 path: _this3._path,
                 data: _this3.get()
             })) {
-                fn(_this3.get());
+                fn(_this3.get(), _helpers.relativeData(data.oldData, data.path, _this3._path));
             }
         }, _filter.filterTypes.AFFECTED);
     };
@@ -22620,12 +22661,6 @@ exports.__esModule = true;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _helpers = require('./helpers');
 
 var _immutable = require('immutable');
 
@@ -22681,5 +22716,5 @@ var View = (function () {
 exports['default'] = View;
 module.exports = exports['default'];
 
-},{"./helpers":6,"immutable":2,"lodash":3}]},{},[7])(7)
+},{"immutable":2}]},{},[7])(7)
 });

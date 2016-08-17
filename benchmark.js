@@ -20,7 +20,6 @@ var reckon = new Reckon({
     i:'i'
 });
 
-
 var reckonArr = new Reckon(['a','b','c','d','e','f','g','h']);
 
 var rootCursor = reckon.select();
