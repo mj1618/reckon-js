@@ -16,7 +16,7 @@ class Reckon {
         }
         this._history = [];
         this._emitter = new Emitter(this);
-        ['on','before','after','once','emit','getRemover','clear','clearAll','off'].forEach(fn=>{
+        ['on','before','after','once','emit','getRemover','clear','clearAll','off','getAllEventTypes'].forEach(fn=>{
             this['_'+fn] = (...args)=>{
                 return this._emitter[fn](...args);
             };

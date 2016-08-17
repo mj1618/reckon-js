@@ -85,8 +85,14 @@ export default class Emitter {
         }
     }
     
-    clearAll(){
-        this._ons={};
+    clearAll(path=null){
+        Object.keys(this._ons).forEach(type=>{
+            this.clear(type,path);
+        });
+    }
+    
+    getAllEventTypes(){
+        return Object.keys(this._ons);
     }
     
     _has(type,fn,listenPath,filter=null){

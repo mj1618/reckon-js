@@ -85,6 +85,10 @@ export default class Select {
         return this._reckon._clear(name,this._path);
     }
     
+    getAllEventTypes(){
+        return this._reckon._getAllEventTypes();
+    }
+    
     clearAll(){
         return this._reckon._clearAll();
     }
