@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {isSubPath,isRelativeEqual} from './helpers';
+import {isSubPath,isRelativeEqual,relativeData} from './helpers';
 import View from './view';
 import {filterTypes} from './filter';
 
@@ -112,7 +112,7 @@ export default class Select {
                     data:this.get()
                 })
             ){
-                fn(this.get());
+                fn(this.get(),relativeData(data.oldData,data.path,this._path));
             }
         },filterTypes.AFFECTED);
     }
