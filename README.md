@@ -3,7 +3,7 @@
 
 **Reckon** is an event-based, immutable state container for javascript apps. Reckon manages state as [Facebook Immutable](https://facebook.github.io/immutable-js/) objects. Reckon provides cursors, views and scoped events so that a single Reckon instance can be used for all state in an application.
 
-Reckon is influenced by the following projects and programming paradigms and ideas:
+Reckon is influenced by and takes cues from the following projects and programming paradigms and ideas:
 * [Baobab](https://github.com/Yomguithereal/baobab)
 * [Redux](https://github.com/reactjs/redux)
 * [Flux](https://facebook.github.io/flux/)
