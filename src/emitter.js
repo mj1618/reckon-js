@@ -1,5 +1,6 @@
 import Immutable from 'immutable';
 import EventEmitter from 'events';
+import filterPath, {filterTypes} from './filter';
 
 const actions = {
     ON:'ON',
@@ -14,20 +15,23 @@ export default class Emitter {
         this._ons = {};
     }
     
-    _handle(type,data,filterData){
+    _handle(type,data,emitPath){
         if(!this._ons[type]){
             return false;
         }
-        
         let current = this._ons[type]
-                .filter(on=>!on.filter || on.filter(filterData));
-        
+                .filter(on=>{
+                    return filterPath(on.filter,emitPath,on.listenPath)
+                });
         let befores = current.filter(on=>on.action===actions.BEFORE);
         let ons = current.filter(on=>on.action===actions.ON);
         let afters = current.filter(on=>on.action===actions.AFTER);
         befores.concat(ons).concat(afters)
                 .map(on=>{
-                    on.fn(data);
+                    let ret = on.fn(data, this._get(emitPath), emitPath);
+                    if(ret!==undefined){
+                        this._set(ret, on.listenPath);
+                    }
                     if(on.n>0){
                         on.n-=1;
                     }
@@ -37,13 +41,13 @@ export default class Emitter {
         return true;
     }
     
-    on(type,fn,filter=null,n=-1,action=actions.ON){
-        if(this.has(type,fn,filter)){
-            return this.getRemover(type,fn,filter);
+    on(type,fn,listenPath,filter=filterTypes.EXACT,n=-1,action=actions.ON){
+        if(this.has(type,fn,listenPath,filter)){
+            return this.getRemover(type,fn,listenPath,filter);
         } else {
             if(!this._ons[type]){
                 this._ons[type] = [];
-                this._emitter.on(type,(data,filterData)=>this._handle(type,data,filterData));
+                this._emitter.on(type,(data,emitPath)=>this._handle(type,data,emitPath));
             }
 
             this._ons[type].push({
@@ -51,20 +55,21 @@ export default class Emitter {
                 fn,
                 filter,
                 n,
-                action
+                action,
+                listenPath
             });
-            return this.getRemover(type,fn,filter);
+            return this.getRemover(type,fn,listenPath,filter);
         } 
     }
     
-    getRemover(type,fn,filter){
+    getRemover(type,fn,listenPath,filter=null){
         return ()=>{
-            this._ons[type] = this._ons[type].filter(a=>a.fn!==fn || (filter!==null && a.filter!==filter));
+            this._ons[type] = this._ons[type].filter(on=>on.fn!==fn || (filter!==null && on.filter!==filter) || (listenPath!==null && on.listenPath!==listenPath));
         };
     }
     
-    once(type,fn,filter=null){
-        return this.on(type,fn,filter,1);
+    once(type,fn,listenPath,filter=null){
+        return this.on(type,fn,listenPath,filter,1);
     }
     
     clear(type){
@@ -75,12 +80,12 @@ export default class Emitter {
         this._ons={};
     }
     
-    has(type,fn,filter){
-        return this._ons[type] && this._ons[type].some(a=>a.fn===fn && a.filter===filter);
+    has(type,fn,listenPath,filter=null){
+        return this._ons[type] && this._ons[type].some(a=>a.fn===fn && (filter===null || a.filter===filter) && (listenPath===null || a.listenPath===listenPath));
     }
     
-    off(type,fn,filter=null){
-        let remover = this.getRemover(type,fn,filter);
+    off(type,fn,listenPath,filter=null){
+        let remover = this.getRemover(type,fn,listenPath,filter);
         if(remover){
             remover();
             return true;
@@ -89,15 +94,15 @@ export default class Emitter {
         }
     }
     
-    before(type,fn,filter=null,n=-1){
-        return this.on(type,fn,filter,n,actions.BEFORE);
+    before(type,fn,listenPath,filter=null,n=-1){
+        return this.on(type,fn,listenPath,filter,n,actions.BEFORE);
     }
     
-    after(type,fn,filter=null,n=-1){
-        return this.on(type,fn,filter,n,actions.AFTER);
+    after(type,fn,listenPath,filter=null,n=-1){
+        return this.on(type,fn,listenPath,filter,n,actions.AFTER);
     }
     
-    emit(type,data,filterData=null){
-        this._emitter.emit(type,data,filterData);
+    emit(type,data,emitPath){
+        this._emitter.emit(type,data,emitPath);
     }
 }

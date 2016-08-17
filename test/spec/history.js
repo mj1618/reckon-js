@@ -16,7 +16,7 @@ describe('History API', function() {
                 'cucumber'
             ]
         }, {
-            maxHistory:3
+            maxHistory:4
         });
         
         

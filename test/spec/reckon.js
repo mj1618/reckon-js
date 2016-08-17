@@ -28,7 +28,7 @@ describe('Reckon API', function() {
             let reckon = new Reckon({
                 fruit:'apple'
             });
-            reckon.on('CHANGE_FRUIT',()=>{
+            reckon.select().on('CHANGE_FRUIT',()=>{
                 assert(reckon.select().get().get('fruit') == 'apple', 'wasnt passed state');
                 reckon.select().update(() => {
                     return {
@@ -36,11 +36,11 @@ describe('Reckon API', function() {
                     };
                 });
             });
-            reckon.on('λupdated',()=>{
+            reckon.select().on('λupdated',()=>{
                 assert(reckon.select().get().toJS().fruit=='pear','not updated');
                 done();
             });
-            reckon.emit('CHANGE_FRUIT');
+            reckon.select().emit('CHANGE_FRUIT');
         });
 
     });

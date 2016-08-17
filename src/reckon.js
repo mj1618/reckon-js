@@ -1,5 +1,4 @@
 import Immutable from 'immutable';
-//import EventEmitter from 'events';
 import _ from 'lodash';
 import Select from './select';
 import {pathGet,inScope} from './helpers';
@@ -34,7 +33,6 @@ class Reckon extends Emitter {
             return this._data;
         }
     }
-    
     
     _getJS(path=[]){
         let res = this._get(path);

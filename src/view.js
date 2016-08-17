@@ -36,5 +36,4 @@ export default class View {
             return this._data;
         }
     }
-    
 }

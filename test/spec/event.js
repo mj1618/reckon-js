@@ -1,7 +1,8 @@
 import assert from 'assert';
-import Reckon from '../../src/index';
+import Reckon, {filterTypes} from '../../src/index';
 import Immutable from 'immutable';
 import _ from 'lodash';
+
 describe('Events API', function() {
 
     describe('listeners', function() {
@@ -69,7 +70,7 @@ describe('Events API', function() {
             };
             reckon.select().on('TEST_EVENT',fn);
             
-            reckon.select().off('TEST_EVENT',fn,reckon.select().FILTER_SUB);
+            reckon.select().off('TEST_EVENT',fn,filterTypes.SUB);
             
             reckon.select().emit('TEST_EVENT');
             
@@ -125,7 +126,7 @@ describe('Events API', function() {
             };
             
             reckon.select().on('TEST_EVENT',fn);
-            reckon.select().on('TEST_EVENT',fn,reckon.select().FILTER_SUB);
+            reckon.select().on('TEST_EVENT',fn,filterTypes.SUB);
             reckon.select().emit('TEST_EVENT');
             
             assert.equal(2,n,'n should have been 2, actually was: '+n);

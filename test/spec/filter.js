@@ -1,5 +1,5 @@
 import assert from 'assert';
-import Reckon from '../../src/index';
+import Reckon,{filterTypes} from '../../src/index';
 import Immutable from 'immutable';
 import {scopes} from '../../src/index';
 
@@ -72,7 +72,7 @@ describe('Reckon Filter API',function(){
             
             fruitSelect.on('SCOPED_EVENT',()=>{
                 done();
-            },fruitSelect.FILTER_SUPER);
+            },filterTypes.SUPER);
             
             fruitsSelect.emit('SCOPED_EVENT');
             
@@ -97,7 +97,7 @@ describe('Reckon Filter API',function(){
             
             fruitsSelect.on('SCOPED_EVENT',()=>{
                 throw new Error('this should not be called');
-            },fruitsSelect.FILTER_SUPER);
+            },filterTypes.SUPER);
             
             fruitSelect.emit('SCOPED_EVENT');
         });
@@ -119,7 +119,7 @@ describe('Reckon Filter API',function(){
             
             fruitSelect.on('SCOPED_EVENT',()=>{
                 throw new Error('this should not be called');
-            },fruitSelect.FILTER_SUPER_EXCLUSIVE);
+            },filterTypes.SUPER_EXCLUSIVE);
             
             fruitSelect.emit('SCOPED_EVENT');
         });
@@ -142,7 +142,7 @@ describe('Reckon Filter API',function(){
             
             fruitsSelect.on('SCOPED_EVENT',()=>{
                 done();
-            },fruitsSelect.FILTER_SUB);
+            },filterTypes.SUB);
             
             fruitSelect.emit('SCOPED_EVENT');
             
@@ -166,7 +166,7 @@ describe('Reckon Filter API',function(){
             
             fruitSelect.on('SCOPED_EVENT',()=>{
                 throw new Error('this should not be called');
-            },fruitSelect.FILTER_SUB);
+            },filterTypes.SUB);
             
             fruitsSelect.emit('SCOPED_EVENT');
         });
@@ -190,7 +190,7 @@ describe('Reckon Filter API',function(){
             
             fruitSelect.on('SCOPED_EVENT',()=>{
                 throw new Error('this should not be called');
-            },fruitSelect.FILTER_SUB_EXCLUSIVE);
+            },filterTypes.SUB_EXCLUSIVE);
             
             fruitSelect.emit('SCOPED_EVENT');
         });
@@ -214,13 +214,13 @@ describe('Reckon Filter API',function(){
             
             fruitsSelect.on('SCOPED_EVENT',()=>{
                 done();
-            },fruitsSelect.FILTER_ROOT);
+            },filterTypes.ROOT);
             
             reckon.select().emit('SCOPED_EVENT');
             
         });
         
-        it('should show message on root scope',function(done){
+        it('should show message on any scope',function(done){
             
             let reckon = new Reckon({
                 fruits: [
@@ -237,7 +237,7 @@ describe('Reckon Filter API',function(){
             
             fruitSelect.on('SCOPED_EVENT',()=>{
                 done();
-            },fruitSelect.FILTER_ANY);
+            },filterTypes.ANY);
             
             reckon.select().emit('SCOPED_EVENT');
             

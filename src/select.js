@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import {isSubPath,isRelativeEqual,pathGet,scopes} from './helpers';
 import View from './view';
+import {filterTypes} from './filter';
 
 export default class Select {
     
     constructor(reckon,path=[]){
         this._reckon=reckon;
         this._path=path;
-        this._initFilters();
         this._views = {};
         this._beforeUpdate = 
             this.before('λupdate',()=>{
@@ -24,16 +24,6 @@ export default class Select {
     
     select(selector){
         return this._reckon.select(this._path.concat(_.toPath(selector)));
-    }
-    
-    _initFilters(){
-        this.FILTER_EXACT = path=>_.isEqual(path,this._path);
-        this.FILTER_SUB = path=>isSubPath(this._path,path);
-        this.FILTER_SUPER = path=>isSubPath(path,this._path);
-        this.FILTER_ROOT = path=>!path || path.length===0;
-        this.FILTER_ANY = ()=>true;
-        this.FILTER_SUB_EXCLUSIVE = path=>isSubPath(this._path,path) && !_.isEqual(this._path,path);
-        this.FILTER_SUPER_EXCLUSIVE = path=>isSubPath(path,this._path) && !_.isEqual(this._path,path);
     }
     
     get(path=[]){
@@ -72,24 +62,24 @@ export default class Select {
         this._reckon.emit(name,data,this._path);
     }
     
-    on(name,fn,filter=this.FILTER_EXACT){
-        return this._reckon.on(name,fn,filter);
+    on(name,fn,filter=filterTypes.CURRENT){
+        return this._reckon.on(name,fn,this._path,filter);
     }
     
-    before(name,fn,filter=this.FILTER_EXACT){
-        return this._reckon.before(name,fn,filter);
+    before(name,fn,filter=filterTypes.CURRENT){
+        return this._reckon.before(name,fn,this._path,filter);
     }
     
-    after(name,fn,filter=this.FILTER_EXACT){
-        return this._reckon.after(name,fn,filter);
+    after(name,fn,filter=filterTypes.CURRENT){
+        return this._reckon.after(name,fn,this._path,filter);
     }
     
     off(name,fn,filter=null){
-        return this._reckon.off(name,fn,filter);
+        return this._reckon.off(name,fn,this._path,filter);
     }
     
-    once(name,fn,filter=this.FILTER_EXACT){
-        return this._reckon.once(name,fn,filter);
+    once(name,fn,filter=filterTypes.CURRENT){
+        return this._reckon.once(name,fn,this._path,filter);
     }
     clear(name){
         return this._reckon.clear(name);
@@ -106,7 +96,7 @@ export default class Select {
     }
     
     onUpdate(fn){
-        return this._reckon.on('λupdated',(data) => {
+        return this.on('λupdated',(data) => {
                 if(
                     isSubPath(data.path,this._path) &&
                     !isRelativeEqual({
@@ -119,7 +109,7 @@ export default class Select {
                 ){
                     fn(this.get());
                 }
-            },this.FILTER_ANY);
+            },filterTypes.AFFECTED);
     }
     
 }

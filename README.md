@@ -33,26 +33,96 @@ fruitCursor.on('ADD_A_FRUIT', name => {
 fruitCursor.emit('ADD_A_FRUIT','mandarin');
 fruitCursor.emit('ADD_A_FRUIT','grape');
 
-// prints:
+// output:
 // New fruit join: apple,pear,banana,mandarin
 // New fruit join: apple,pear,banana,mandarin,grape
 ```
 
 ## Installation
 
-Node.js/webpack install stable version
+To install stable version if you are using npm package manager
 ```sh
-npm install baobab
+npm install reckon-js --save
 ```
 
-Dev version
-```sh
-git+https://github.com/Yomguithereal/baobab.git
+## Documentation
+
+* The Reckon Object
+* Cursors
+* Events
+* Updates
+* Views
+
+### The Reckon Object
+
+Create a reckon object with your initial state
+
+```js
+let reckon = new Reckon({
+    fruits: [
+        'apple',
+        'pear'
+    ],
+    veges: [
+        'tomato',
+        'cucumber'
+    ]
+});
 ```
 
-Download the latest stable version of the script:
-```sh
-[here](https://raw.githubusercontent.com/mj1618/reckon/master/dist/reckon.min.js)
+The state is made immutable with [Immutable JS](https://facebook.github.io/immutable-js/).
+Get back the state like this
+
+```js
+let state = reckon.get();
+state.get('fruits').get(0); //returns 'apple'
 ```
 
+However, most of the time you will use cursors to access/update the state.
 
+
+### Cursors
+
+Cursors are used to manipulate a particular part of the state.
+Let's say we just want to deal with the fruits
+
+```js
+let fruitsCursor = reckon.select('fruits');
+fruitsCursor.get(); //returns ['apple','pear'] as an ImmutableJS wrapper
+```
+
+Updates happen in an immutable fashion, like this
+
+```js
+fruitsCursor.update(currentState => {
+    return currentState.push('mandarin').set(1,'banana');
+});
+fruitsCursor.get(); //return ['apple','banana','mandarin'] as immutable
+```
+For the full list of immutable opertions refer to the ImmutableJS Documentation.
+
+### Events
+
+You can fire events on a cursor, and you can listen to events on the cursor.
+
+```js
+fruitsCursor.on('ADD_FRUIT_EVENT', (data) => {
+    fruitsCursor.update(fruits=>fruits.concat(data));
+});
+
+fruitsCursor.emit('ADD_FRUIT_EVENT', ['orange','grapefruit']);
+```
+
+### Updates
+
+
+
+## Contributions
+
+Contributions are greatly appreciated, whether you're new to JS or experienced there are tasks that can be done.
+
+Issues and feature requests are also welcome [here](https://github.com/mj1618/reckon-js/issues).
+
+## License
+
+MIT
