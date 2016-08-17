@@ -11,7 +11,7 @@ describe('Reckon View API',function(){
                 fruit:'apple'
             });
             
-            let view = reckon.select().addView('fruit_view',data=>data.get('fruit'));
+            let view = reckon.addView('fruit_view',data=>data.get('fruit'));
             
             assert(view.get()==='apple');
             
@@ -23,9 +23,9 @@ describe('Reckon View API',function(){
                 fruit:'apple'
             });
             
-            let view = reckon.select().addView('fruit_view',data=>data.get('fruit'));
+            let view = reckon.addView('fruit_view',data=>data.get('fruit'));
             
-            reckon.select().update(()=>{
+            reckon.update(()=>{
                 return {
                     fruit:'pear'
                 };
@@ -41,13 +41,13 @@ describe('Reckon View API',function(){
                 fruit:'apple'
             });
             
-            let view = reckon.select().addView('fruit_view',data=>data.get('fruit'));
+            let view = reckon.addView('fruit_view',data=>data.get('fruit'));
             view.onUpdate(data=>{
                 assert(data==='pear');
                 done();
             });
             
-            reckon.select().update(()=>{
+            reckon.update(()=>{
                 return {
                     fruit:'pear'
                 };

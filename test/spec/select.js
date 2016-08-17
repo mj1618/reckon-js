@@ -176,7 +176,7 @@ describe('Reckon Select API',function(){
             });
             
             let fruitSelect = reckon.select('fruits');
-            let rootSelect = reckon.select();
+            let rootSelect = reckon;
             
             fruitSelect.onUpdate(data=>{
                 throw new Error('Update should not have been called as data has not changed: '+data);
@@ -250,7 +250,7 @@ describe('Reckon Select API',function(){
             });
             
             let fruitSelect = reckon.select('fruits[0]');
-            let rootSelect = reckon.select();
+            let rootSelect = reckon;
             
             fruitSelect.onUpdate((data)=>{
                 assert(data==='banana','did not update data correctly');
@@ -279,7 +279,7 @@ describe('Reckon Select API',function(){
                     fruit:'apple'
                 });
 
-                reckon.select().update(()=>{
+                reckon.update(()=>{
                     reckon.select('fruit').update(()=>{
                         return 'second';
                     });

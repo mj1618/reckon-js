@@ -27,17 +27,17 @@ describe('History API', function() {
         
         assert(reckon.select('fruits[0]').get()==='pear');
         
-        reckon.select().update(state=>{
+        reckon.update(state=>{
             return state.set('fruits',null);
         });
         
         assert(reckon.select('fruits').get()===null);
         
-        reckon.select().update(()=>{
+        reckon.update(()=>{
             return {};
         });
         
-        assert(reckon.select().get().fruits===undefined);
+        assert(reckon.get().fruits===undefined);
         
         reckon.undo();
         

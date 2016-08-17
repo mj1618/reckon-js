@@ -28,19 +28,19 @@ describe('Reckon API', function() {
             let reckon = new Reckon({
                 fruit:'apple'
             });
-            reckon.select().on('CHANGE_FRUIT',()=>{
-                assert(reckon.select().get().get('fruit') == 'apple', 'wasnt passed state');
-                reckon.select().update(() => {
+            reckon.on('CHANGE_FRUIT',()=>{
+                assert(reckon.get().get('fruit') == 'apple', 'wasnt passed state');
+                reckon.update(() => {
                     return {
                         fruit:'pear'
                     };
                 });
             });
-            reckon.select().on('λupdated',()=>{
-                assert(reckon.select().get().toJS().fruit=='pear','not updated');
+            reckon.on('λupdated',()=>{
+                assert(reckon.get().toJS().fruit=='pear','not updated');
                 done();
             });
-            reckon.select().emit('CHANGE_FRUIT');
+            reckon.emit('CHANGE_FRUIT');
         });
 
     });

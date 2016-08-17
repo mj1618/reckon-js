@@ -24,7 +24,7 @@ class Reckon {
         
         this._rootSelect = this.select();
         
-        ['get','on','before','after','once','emit','getRemover','clear','clearAll','off'].forEach(fn=>{
+        ['addView','update','get','on','before','after','once','emit','getRemover','clear','clearAll','off'].forEach(fn=>{
             this[fn] = (...args)=>{
                 return this._rootSelect[fn](...args);
             };

@@ -20,13 +20,13 @@ describe('Events API', function() {
                 ]
             });
             
-            let remover = reckon.select().on('TEST_EVENT',()=>{
+            let remover = reckon.on('TEST_EVENT',()=>{
                 throw new Error('should not have called this listener');
             });
             
             remover();
             
-            reckon.select().emit('TEST_EVENT');
+            reckon.emit('TEST_EVENT');
             
         });
         it('removing with off',function(){
@@ -44,11 +44,11 @@ describe('Events API', function() {
             let fn = ()=>{
                 throw new Error('should not have called this listener');
             };
-            reckon.select().on('TEST_EVENT',fn);
+            reckon.on('TEST_EVENT',fn);
             
-            reckon.select().off('TEST_EVENT',fn);
+            reckon.off('TEST_EVENT',fn);
             
-            reckon.select().emit('TEST_EVENT');
+            reckon.emit('TEST_EVENT');
             
         });
         
@@ -56,11 +56,11 @@ describe('Events API', function() {
           
             let reckon = new Reckon(0);
             let fn = n => n+1;
-            reckon.select().on('TEST_EVENT',fn);
+            reckon.on('TEST_EVENT',fn);
             
-            reckon.select().off('TEST_EVENT',fn,filterTypes.SUB);
+            reckon.off('TEST_EVENT',fn,filterTypes.SUB);
             
-            reckon.select().emit('TEST_EVENT');
+            reckon.emit('TEST_EVENT');
             
             assert.equal(reckon.get(),1,'listener wasnt called');
             
@@ -87,9 +87,9 @@ describe('Events API', function() {
                 n+=1;
             };
             
-            reckon.select().on('TEST_EVENT',fn);
-            reckon.select().on('TEST_EVENT',fn);
-            reckon.select().emit('TEST_EVENT');
+            reckon.on('TEST_EVENT',fn);
+            reckon.on('TEST_EVENT',fn);
+            reckon.emit('TEST_EVENT');
             
         });
         
@@ -113,9 +113,9 @@ describe('Events API', function() {
                 n+=1;
             };
             
-            reckon.select().on('TEST_EVENT',fn);
-            reckon.select().on('TEST_EVENT',fn,filterTypes.SUB);
-            reckon.select().emit('TEST_EVENT');
+            reckon.on('TEST_EVENT',fn);
+            reckon.on('TEST_EVENT',fn,filterTypes.SUB);
+            reckon.emit('TEST_EVENT');
             
             assert.equal(2,n,'n should have been 2, actually was: '+n);
             
@@ -137,12 +137,12 @@ describe('Events API', function() {
             
             let n = 0;
             
-            reckon.select().once('TEST_EVENT',()=>{
+            reckon.once('TEST_EVENT',()=>{
                 n+=1;
             });
             
-            reckon.select().emit('TEST_EVENT');
-            reckon.select().emit('TEST_EVENT');
+            reckon.emit('TEST_EVENT');
+            reckon.emit('TEST_EVENT');
             assert.equal(1,n,'n should have been 1, actually was: '+n);
         });
         
@@ -162,13 +162,13 @@ describe('Events API', function() {
             
             let order=[];
             
-            reckon.select().on('TEST_EVENT',()=>{
+            reckon.on('TEST_EVENT',()=>{
                 order.push('b');
             });
-            reckon.select().before('TEST_EVENT',()=>{
+            reckon.before('TEST_EVENT',()=>{
                 order.push('a');
             });
-            reckon.select().emit('TEST_EVENT');
+            reckon.emit('TEST_EVENT');
             assert(_.isEqual(order,['a','b']),'events fired in wrong order');
             
         });
@@ -188,13 +188,13 @@ describe('Events API', function() {
             
             let order=[];
             
-            reckon.select().before('TEST_EVENT',()=>{
+            reckon.before('TEST_EVENT',()=>{
                 order.push('a');
             });
-            reckon.select().on('TEST_EVENT',()=>{
+            reckon.on('TEST_EVENT',()=>{
                 order.push('b');
             });
-            reckon.select().emit('TEST_EVENT');
+            reckon.emit('TEST_EVENT');
             assert(_.isEqual(order,['a','b']),'events fired in wrong order');
             
         });
@@ -214,13 +214,13 @@ describe('Events API', function() {
             
             let order=[];
             
-            reckon.select().on('TEST_EVENT',()=>{
+            reckon.on('TEST_EVENT',()=>{
                 order.push('a');
             });
-            reckon.select().after('TEST_EVENT',()=>{
+            reckon.after('TEST_EVENT',()=>{
                 order.push('b');
             });
-            reckon.select().emit('TEST_EVENT');
+            reckon.emit('TEST_EVENT');
             assert(_.isEqual(order,['a','b']),'events fired in wrong order');
             
         });
@@ -240,13 +240,13 @@ describe('Events API', function() {
             
             let order=[];
             
-            reckon.select().after('TEST_EVENT',()=>{
+            reckon.after('TEST_EVENT',()=>{
                 order.push('b');
             });
-            reckon.select().on('TEST_EVENT',()=>{
+            reckon.on('TEST_EVENT',()=>{
                 order.push('a');
             });
-            reckon.select().emit('TEST_EVENT');
+            reckon.emit('TEST_EVENT');
             assert(_.isEqual(order,['a','b']),'events fired in wrong order');
             
         });
@@ -265,7 +265,7 @@ describe('Events API', function() {
                 ]
             });
             
-            reckon.select().on('TEST_EVENT',()=>{
+            reckon.on('TEST_EVENT',()=>{
                 throw new Error('should not have been called');
             });
             
@@ -273,8 +273,8 @@ describe('Events API', function() {
                 throw new Error('should not have been called');
             });
             
-            reckon.select().clear('TEST_EVENT',['fruits']);
-            reckon.select().emit('TEST_EVENT');
+            reckon.clear('TEST_EVENT',['fruits']);
+            reckon.emit('TEST_EVENT');
             
         });
         
@@ -291,12 +291,12 @@ describe('Events API', function() {
                 ]
             });
             
-            reckon.select().on('TEST_EVENT',()=>{
+            reckon.on('TEST_EVENT',()=>{
                 throw new Error('should not have been called');
             });
             
-            reckon.select().clearAll();
-            reckon.select().emit('TEST_EVENT');
+            reckon.clearAll();
+            reckon.emit('TEST_EVENT');
             
         });
         

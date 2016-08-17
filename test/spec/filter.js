@@ -47,7 +47,7 @@ describe('Reckon Filter API',function(){
                 throw new Error('this should not be called');
             });
             
-            reckon.select().emit('SCOPED_EVENT');
+            reckon.emit('SCOPED_EVENT');
         });
         
         
@@ -211,7 +211,7 @@ describe('Reckon Filter API',function(){
                 done();
             },filterTypes.ROOT);
             
-            reckon.select().emit('SCOPED_EVENT');
+            reckon.emit('SCOPED_EVENT');
             
         });
         
@@ -234,7 +234,7 @@ describe('Reckon Filter API',function(){
                 done();
             },filterTypes.ANY);
             
-            reckon.select().emit('SCOPED_EVENT');
+            reckon.emit('SCOPED_EVENT');
             
         });
 
