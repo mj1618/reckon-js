@@ -281,7 +281,11 @@ describe('Events API', function() {
                 throw new Error('should not have been called');
             });
             
-            reckon.select().clear('TEST_EVENT');
+            reckon.select('fruits').on('TEST_EVENT',()=>{
+                throw new Error('should not have been called');
+            });
+            
+            reckon.select().clear('TEST_EVENT',['fruits']);
             reckon.select().emit('TEST_EVENT');
             
         });

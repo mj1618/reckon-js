@@ -59,40 +59,41 @@ export default class Select {
     }
     
     emit(name,data=null){
-        this._reckon.emit(name,data,this._path);
+        this._reckon._emit(name,data,this._path);
     }
     
     on(name,fn,filter=filterTypes.CURRENT){
-        return this._reckon.on(name,fn,this._path,filter);
+        return this._reckon._on(name,fn,this._path,filter);
     }
     
     before(name,fn,filter=filterTypes.CURRENT){
-        return this._reckon.before(name,fn,this._path,filter);
+        return this._reckon._before(name,fn,this._path,filter);
     }
     
     after(name,fn,filter=filterTypes.CURRENT){
-        return this._reckon.after(name,fn,this._path,filter);
+        return this._reckon._after(name,fn,this._path,filter);
     }
     
     off(name,fn,filter=null){
-        return this._reckon.off(name,fn,this._path,filter);
+        return this._reckon._off(name,fn,this._path,filter);
     }
     
     once(name,fn,filter=filterTypes.CURRENT){
-        return this._reckon.once(name,fn,this._path,filter);
+        return this._reckon._once(name,fn,this._path,filter);
     }
     clear(name){
-        return this._reckon.clear(name);
+        return this._reckon._clear(name,this._path);
     }
+    
     clearAll(){
-        return this._reckon.clearAll();
+        return this._reckon._clearAll();
     }
     
     update(fn){
         this.once('λupdate',()=>{
             this._reckon._update(fn(this.get()),this._path);
         });
-        this._reckon.emit('λupdate',null,this._path);
+        this._reckon._emit('λupdate',null,this._path);
     }
     
     onUpdate(fn){

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import {isSuper,isSub,isRoot,isPathsEqual} from './helpers';
 
 let filterTypes = 
     [
@@ -17,21 +18,6 @@ export {
     filterTypes
 };
 
-function isSuper(a,b){
-    return a===null || (b!==null && _.isEqual(a,b.slice(0,a.length)))
-}
-function isSub(a,b){
-    return b===null || (a!==null && _.isEqual(b,a.slice(0,b.length)));
-}
-
-function isRoot(a,b){
-    return a===null || a.length===0;
-}
-
-function isEqual(a,b){
-    return _.isEqual(a,b);
-}
-
 export default function filterPath(f,a=[],b=[]){
     switch(f){
         case 'SUPER':
@@ -45,11 +31,11 @@ export default function filterPath(f,a=[],b=[]){
         case 'ROOT':
             return isRoot(a,b);
         case 'CURRENT':
-            return isEqual(a,b);
+            return isPathsEqual(a,b);
         case 'SUPER_EXCLUSIVE':
-            return !isEqual(a,b) && isSuper(a,b);
+            return !isPathsEqual(a,b) && isSuper(a,b);
         case 'SUB_EXCLUSIVE':
-            return !isEqual(a,b) && isSub(a,b);
+            return !isPathsEqual(a,b) && isSub(a,b);
         default:
             return false;
     }

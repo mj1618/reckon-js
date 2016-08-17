@@ -1,6 +1,8 @@
 import Immutable from 'immutable';
 import EventEmitter from 'events';
 import filterPath, {filterTypes} from './filter';
+import _ from 'lodash';
+import {isPathsEqual} from './helpers';
 
 const actions = {
     ON:'ON',
@@ -10,9 +12,10 @@ const actions = {
 
 export default class Emitter {
     
-    constructor(){
+    constructor(reckon){
         this._emitter = new EventEmitter();
         this._ons = {};
+        this._reckon = reckon;
     }
     
     _handle(type,data,emitPath){
@@ -28,9 +31,9 @@ export default class Emitter {
         let afters = current.filter(on=>on.action===actions.AFTER);
         befores.concat(ons).concat(afters)
                 .map(on=>{
-                    let ret = on.fn(data, this._get(emitPath), emitPath);
+                    let ret = on.fn(data, this._reckon._get(emitPath), emitPath);
                     if(ret!==undefined){
-                        this._set(ret, on.listenPath);
+                        this._reckon._set(ret, on.listenPath);
                     }
                     if(on.n>0){
                         on.n-=1;
@@ -42,8 +45,8 @@ export default class Emitter {
     }
     
     on(type,fn,listenPath,filter=filterTypes.EXACT,n=-1,action=actions.ON){
-        if(this.has(type,fn,listenPath,filter)){
-            return this.getRemover(type,fn,listenPath,filter);
+        if(this._has(type,fn,listenPath,filter)){
+            return this.getRemovers(type,fn,listenPath,filter);
         } else {
             if(!this._ons[type]){
                 this._ons[type] = [];
@@ -58,11 +61,11 @@ export default class Emitter {
                 action,
                 listenPath
             });
-            return this.getRemover(type,fn,listenPath,filter);
+            return this.getRemovers(type,fn,listenPath,filter);
         } 
     }
     
-    getRemover(type,fn,listenPath,filter=null){
+    getRemovers(type,fn,listenPath,filter=null){
         return ()=>{
             this._ons[type] = this._ons[type].filter(on=>on.fn!==fn || (filter!==null && on.filter!==filter) || (listenPath!==null && on.listenPath!==listenPath));
         };
@@ -72,20 +75,26 @@ export default class Emitter {
         return this.on(type,fn,listenPath,filter,1);
     }
     
-    clear(type){
-        this._ons[type] = [];
+    clear(type,path=null){
+        if(path===null){
+            this._ons[type] = [];
+        } else {
+            this._ons[type].forEach(on=>console.log(JSON.stringify(on)));
+            this._ons[type] = this._ons[type]
+                .filter( on => !isPathsEqual(on.listenPath,path) );
+        }
     }
     
     clearAll(){
         this._ons={};
     }
     
-    has(type,fn,listenPath,filter=null){
+    _has(type,fn,listenPath,filter=null){
         return this._ons[type] && this._ons[type].some(a=>a.fn===fn && (filter===null || a.filter===filter) && (listenPath===null || a.listenPath===listenPath));
     }
     
     off(type,fn,listenPath,filter=null){
-        let remover = this.getRemover(type,fn,listenPath,filter);
+        let remover = this.getRemovers(type,fn,listenPath,filter);
         if(remover){
             remover();
             return true;

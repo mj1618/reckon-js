@@ -4,10 +4,9 @@ import Select from './select';
 import {pathGet,inScope} from './helpers';
 import Emitter from './emitter';
 
-class Reckon extends Emitter {
+class Reckon {
     
     constructor(data={},options={}){
-        super();
         this._data = Immutable.fromJS(data);
         this._selects = {};
         this._updating=false;
@@ -16,6 +15,20 @@ class Reckon extends Emitter {
             this._maxHistory=options.maxHistory;
         }
         this._history = [];
+        this._emitter = new Emitter(this);
+        ['on','before','after','once','emit','getRemover','clear','clearAll','off'].forEach(fn=>{
+            this['_'+fn] = (...args)=>{
+                return this._emitter[fn](...args);
+            };
+        });
+        
+        this._rootSelect = this.select();
+        
+        ['on','before','after','once','emit','getRemover','clear','clearAll','off'].forEach(fn=>{
+            this[fn] = (...args)=>{
+                return this._rootSelect[fn](...args);
+            };
+        });
     }
     
     select(selector){
@@ -45,7 +58,7 @@ class Reckon extends Emitter {
     _update(data,path=[],record=true){
         let old = this._get(path);
         this._set(data,path);
-        this.emit('λupdated',{
+        this._emit('λupdated',{
             path:path,
             oldData:old
         });
