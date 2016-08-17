@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import {isSuper,isSub,isRoot,isPathsEqual} from './helpers';
 
 let filterTypes = 

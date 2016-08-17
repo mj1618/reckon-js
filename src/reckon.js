@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 import _ from 'lodash';
 import Select from './select';
-import {pathGet,inScope} from './helpers';
+import {pathGet} from './helpers';
 import Emitter from './emitter';
 
 class Reckon {
@@ -24,7 +24,7 @@ class Reckon {
         
         this._rootSelect = this.select();
         
-        ['on','before','after','once','emit','getRemover','clear','clearAll','off'].forEach(fn=>{
+        ['get','on','before','after','once','emit','getRemover','clear','clearAll','off'].forEach(fn=>{
             this[fn] = (...args)=>{
                 return this._rootSelect[fn](...args);
             };

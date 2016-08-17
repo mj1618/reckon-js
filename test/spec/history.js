@@ -1,7 +1,6 @@
+/* eslint-env node, mocha */
 import assert from 'assert';
 import Reckon from '../../src/index';
-import Immutable from 'immutable';
-import _ from 'lodash';
 describe('History API', function() {
 
     it('basic history',function(){
@@ -29,12 +28,12 @@ describe('History API', function() {
         assert(reckon.select('fruits[0]').get()==='pear');
         
         reckon.select().update(state=>{
-            return state.set("fruits",null);
+            return state.set('fruits',null);
         });
         
         assert(reckon.select('fruits').get()===null);
         
-        reckon.select().update(state=>{
+        reckon.select().update(()=>{
             return {};
         });
         

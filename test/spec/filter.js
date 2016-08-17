@@ -1,7 +1,5 @@
-import assert from 'assert';
+/* eslint-env node, mocha */
 import Reckon,{filterTypes} from '../../src/index';
-import Immutable from 'immutable';
-import {scopes} from '../../src/index';
 
 describe('Reckon Filter API',function(){
     describe('data',function(){
@@ -115,7 +113,6 @@ describe('Reckon Filter API',function(){
             });
             
             let fruitSelect = reckon.select('fruit[0]');
-            let fruitsSelect = reckon.select('fruit');
             
             fruitSelect.on('SCOPED_EVENT',()=>{
                 throw new Error('this should not be called');
@@ -186,7 +183,6 @@ describe('Reckon Filter API',function(){
             });
             
             let fruitSelect = reckon.select('fruit[0]');
-            let fruitsSelect = reckon.select('fruit');
             
             fruitSelect.on('SCOPED_EVENT',()=>{
                 throw new Error('this should not be called');
@@ -209,7 +205,6 @@ describe('Reckon Filter API',function(){
                 ]
             });
             
-            let fruitSelect = reckon.select('fruit[0]');
             let fruitsSelect = reckon.select('fruit');
             
             fruitsSelect.on('SCOPED_EVENT',()=>{

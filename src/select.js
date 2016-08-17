@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {isSubPath,isRelativeEqual,pathGet,scopes} from './helpers';
+import {isSubPath,isRelativeEqual} from './helpers';
 import View from './view';
 import {filterTypes} from './filter';
 
@@ -102,19 +102,19 @@ export default class Select {
     
     onUpdate(fn){
         return this.on('λupdated',(data) => {
-                if(
-                    isSubPath(data.path,this._path) &&
-                    !isRelativeEqual({
-                        path:data.path,
-                        data:data.oldData,
-                    },{
-                        path:this._path,
-                        data:this.get()
-                    })
-                ){
-                    fn(this.get());
-                }
-            },filterTypes.AFFECTED);
+            if(
+                isSubPath(data.path,this._path) &&
+                !isRelativeEqual({
+                    path:data.path,
+                    data:data.oldData
+                },{
+                    path:this._path,
+                    data:this.get()
+                })
+            ){
+                fn(this.get());
+            }
+        },filterTypes.AFFECTED);
     }
     
 }

@@ -1,6 +1,7 @@
+/* eslint-env node, mocha */
 import assert from 'assert';
 import Reckon from '../../src/index';
-import Immutable from 'immutable';
+
 describe('Reckon Select API',function(){
     describe('data',function(){
         
@@ -278,8 +279,8 @@ describe('Reckon Select API',function(){
                     fruit:'apple'
                 });
 
-                reckon.select().update((state)=>{
-                    reckon.select('fruit').update((state)=>{
+                reckon.select().update(()=>{
+                    reckon.select('fruit').update(()=>{
                         return 'second';
                     });
                     return 'third';

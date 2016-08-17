@@ -1,6 +1,7 @@
+/* eslint-env node, mocha */
 import assert from 'assert';
 import Reckon from '../../src/index';
-import Immutable from 'immutable';
+
 describe('Reckon View API',function(){
     describe('create',function(){
         
@@ -27,7 +28,7 @@ describe('Reckon View API',function(){
             reckon.select().update(()=>{
                 return {
                     fruit:'pear'
-                }
+                };
             });
             
             assert(view.get()==='pear');
@@ -49,7 +50,7 @@ describe('Reckon View API',function(){
             reckon.select().update(()=>{
                 return {
                     fruit:'pear'
-                }
+                };
             });
             
             
@@ -65,7 +66,9 @@ describe('Reckon View API',function(){
             let fruitJoinView = fruitCursor.addView('Fruit join', fruits => fruits.join());
             
             fruitJoinView.onUpdate(newFruitJoin=>{
-                console.log("New fruit join: "+newFruitJoin);
+                /* eslint-disable no-console */
+                console.log('New fruit join: '+newFruitJoin);
+                /* eslint-enable no-console */
             });
 
             fruitCursor.on('ADD_A_FRUIT', name => {

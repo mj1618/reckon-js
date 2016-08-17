@@ -1,5 +1,3 @@
-import _ from 'lodash';
-import {isSubPath,isRelativeEqual,pathGet,scopes} from './helpers';
 import Immutable from 'immutable';
 
 export default class View {

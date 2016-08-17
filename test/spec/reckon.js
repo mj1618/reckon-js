@@ -1,6 +1,6 @@
+/* eslint-env node, mocha */
 import assert from 'assert';
 import Reckon from '../../src/index';
-import Immutable from 'immutable';
 describe('Reckon API', function() {
 
     describe('constructor', function() {

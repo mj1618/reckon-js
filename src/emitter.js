@@ -1,7 +1,5 @@
-import Immutable from 'immutable';
 import EventEmitter from 'events';
 import filterPath, {filterTypes} from './filter';
-import _ from 'lodash';
 import {isPathsEqual} from './helpers';
 
 const actions = {
@@ -24,7 +22,7 @@ export default class Emitter {
         }
         let current = this._ons[type]
                 .filter(on=>{
-                    return filterPath(on.filter,emitPath,on.listenPath)
+                    return filterPath(on.filter,emitPath,on.listenPath);
                 });
         let befores = current.filter(on=>on.action===actions.BEFORE);
         let ons = current.filter(on=>on.action===actions.ON);
@@ -79,7 +77,6 @@ export default class Emitter {
         if(path===null){
             this._ons[type] = [];
         } else {
-            this._ons[type].forEach(on=>console.log(JSON.stringify(on)));
             this._ons[type] = this._ons[type]
                 .filter( on => !isPathsEqual(on.listenPath,path) );
         }

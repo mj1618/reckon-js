@@ -14,6 +14,8 @@ Reckon is influenced by the following projects and programming paradigms and ide
 ## Example
 
 ```js
+import Reckon from 'reckon';
+
 let reckon = new Reckon({
     fruits:['apple','pear','banana'],
     veges:['carrot','broccoli','celery']
@@ -114,7 +116,6 @@ fruitsCursor.emit('ADD_FRUIT_EVENT', ['orange','grapefruit']);
 ```
 
 ### Updates
-
 
 
 ## Contributions

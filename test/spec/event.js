@@ -1,6 +1,6 @@
+/* eslint-env node, mocha */
 import assert from 'assert';
 import Reckon, {filterTypes} from '../../src/index';
-import Immutable from 'immutable';
 import _ from 'lodash';
 
 describe('Events API', function() {
@@ -54,27 +54,15 @@ describe('Events API', function() {
         
         it('doesnt remove',function(){
           
-            let reckon = new Reckon({
-                fruits: [
-                    'apple',
-                    'pear'
-                ],
-                veges: [
-                    'tomato',
-                    'cucumber'
-                ]
-            });
-            let n = 0;
-            let fn = ()=>{
-                n+=1;
-            };
+            let reckon = new Reckon(0);
+            let fn = n => n+1;
             reckon.select().on('TEST_EVENT',fn);
             
             reckon.select().off('TEST_EVENT',fn,filterTypes.SUB);
             
             reckon.select().emit('TEST_EVENT');
             
-            assert.equal(n,1,'listener wasnt called');
+            assert.equal(reckon.get(),1,'listener wasnt called');
             
         });
         

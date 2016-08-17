@@ -44,13 +44,13 @@ export function relativeData(data,from,to){
 }
 
 export function isSuper(a,b){
-    return a===null || (b!==null && _.isEqual(a,b.slice(0,a.length)))
+    return a===null || (b!==null && _.isEqual(a,b.slice(0,a.length)));
 }
 export function isSub(a,b){
     return b===null || (a!==null && _.isEqual(b,a.slice(0,b.length)));
 }
 
-export function isRoot(a,b){
+export function isRoot(a){
     return a===null || a.length===0;
 }
 

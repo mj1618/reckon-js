@@ -2,7 +2,7 @@
   "name": "reckon",
   "version": "0.0.1",
   "description": "Event-based, immutable state container for javascript apps with cursors and views",
-  "main": "./dist/reckon.min.js",
+  "main": "./dist/index.js",
   "dependencies": {
     "add-banner": "^0.1.0",
     "eslint-loader": "^1.5.0",
@@ -24,6 +24,9 @@
     "build": "mkdirp build && browserify ./src/reckon.js -t [babelify --loose all] -s Reckon -o ./build/reckon.js && uglifyjs ./build/reckon.js -c -m -o ./build/reckon.min.js && node ./scripts/banner.js",
     "dist": "babel ./src --out-dir dist",
     "clean": "rm -f build/*.js dist/*.js",
+    "lint": "eslint ./src ./test",
+    "check": "npm test && npm run lint && npm run build",
+    "prepublish": "npm run dist",
     "test": "mocha -R spec --recursive --compilers js:babel/register",
     "benchmark": "babel-node benchmark.js"
   },
