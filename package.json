@@ -1,6 +1,6 @@
 {
   "name": "reckon-js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Event-based, immutable state container for javascript apps with cursors and views",
   "main": "./dist/reckon.js",
   "dependencies": {
