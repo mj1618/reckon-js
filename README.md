@@ -129,11 +129,11 @@ fruitsCursor.on('ADD_FRUIT_EVENT', (data,fruits) => {
 fruitsCursor.emit('ADD_FRUIT_EVENT', ['orange','grapefruit']);
 ```
 
-If your event listener returns anything, it is used to replace the current selectors state.
+If your event listener returns anything, it is used to replace the current cursors state.
 
 ### Updates
 
-You could use an event listener, and emit an event in order to update your state. But that can get cumbersome. Here's a quicker method that does essentially the same thing
+You could use an event listener and emit an event in order to update your state. But sometimes you just want to do an update. Here's a shortcut to simply update the state, under the covers it still fires events to do the update
 
 ```js
 myCursor.update(state=>{
@@ -141,7 +141,7 @@ myCursor.update(state=>{
 });
 ```
 
-You can also listen for updates on the cursor. This will fire when anything in the cursors state changes, regardless of which cursor made the change:
+You can also listen for updates on the cursor. This will fire when anything in the cursors state changes, regardless of which cursor made the change
 
 ```js
 myCursor.onUpdate( (newState,oldState) => {
@@ -153,31 +153,30 @@ Anything you return will be ignored though, so you don't end up with an infinite
 
 ### Filters
 
-If you add a listener to a selector, by default it listens ONLY to events fired on that selector.
-However, what if you want to listen to events up the state tree, or below on the state tree?
+If you add a listener to a cursor, by default it listens ONLY to events fired on that cursor.
+However, what if you want to listen to events higher up the state tree, or lower down on the state tree?
 
 ```js
 import {filterTypes} from 'reckon-js';
-
+...
 let fruitSelect = reckon.select('fruit[0]');
-let fruitsSelect = reckon.select('fruit');
 
 fruitSelect.on('SCOPED_EVENT',()=>{
     //this will be called because we passed the SUPER filter
 },filterTypes.SUPER);
 
-fruitsSelect.emit('SCOPED_EVENT');
+reckon.emit('SCOPED_EVENT');
 ```
 
 The list of filters are:
-* CURRENT (default) - must be fired on the same selector, at the same path in the tree
+* CURRENT (default) - listens to events fired on the same cursor, at the same path in the tree
 * SUB - anything equal to or below on the state tree
 * SUPER - anything equal to or above on the state tree
 * ANY - listens to all events
 * ROOT - events emitted only on the top of the tree
-* SUB_EXCLUSIVE - listens to events strictly below the current selector
-* SUPER_EXCLUSIVE - listens to events strictly above the current selector
-* AFFECTED - anything where a change to the state in that selector could affect the current selector. i.e. anything above, below or the same as the current selector
+* SUB_EXCLUSIVE - listens to events strictly below the current cursor
+* SUPER_EXCLUSIVE - listens to events strictly above the current cursor
+* AFFECTED - anything where a change to the state in that cursor could affect the current cursor. i.e. anything above, below or the same as the current cursor
 
 ### Views
 
