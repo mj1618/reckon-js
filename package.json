@@ -1,5 +1,5 @@
 {
-  "name": "reckon",
+  "name": "reckon-js",
   "version": "0.1.0",
   "description": "Event-based, immutable state container for javascript apps with cursors and views",
   "main": "./dist/reckon.js",
@@ -32,11 +32,12 @@
   },
   "author": {
     "name": "Matt James",
-    "url": "http://github.com/mj1618"
+    "url": "http://github.com/mj1618",
+    "email": "matthew.stephen.james@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mj1618/reckon.git"
+    "url": "https://github.com/mj1618/reckon-js.git"
   },
   "keywords": [
     "immutable",
@@ -46,7 +47,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mj1618/reckon/issues"
+    "url": "https://github.com/mj1618/reckon-js/issues"
   },
-  "homepage": "https://github.com/mj1618/reckon"
+  "homepage": "https://github.com/mj1618/reckon-js"
 }
