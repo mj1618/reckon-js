@@ -1,4 +1,4 @@
-# Reckon [![Build Status](https://travis-ci.org/mj1618/reckon.svg)](https://travis-ci.org/mj1618/reckon)
+# Reckon [![Build Status](https://travis-ci.org/mj1618/reckon-js.svg?branch=master)](https://travis-ci.org/mj1618/reckon-js)
 
 
 **Reckon** is an event-based, immutable state container for javascript apps. Reckon manages state as [Facebook Immutable](https://facebook.github.io/immutable-js/) objects. Reckon provides cursors, views and scoped events so that a single Reckon instance can be used for all state in an application.
