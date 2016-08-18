@@ -1,0 +1,24 @@
+{
+  "name": "reckon-js",
+  "main": "build/reckon.min.js",
+  "version": "0.1.3",
+  "homepage": "https://github.com/mj1618/reckon-js",
+  "author": {
+    "name": "Matt James",
+    "url": "http://github.com/mj1618"
+  },
+  "description": "JavaScript event based immutable data store with cursors and views",
+  "keywords": [
+      "immutable",
+      "store",
+      "cursors",
+      "events"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
