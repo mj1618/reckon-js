@@ -2,7 +2,7 @@
  * Reckon
  *
  * Homepage: https://github.com/mj1618/reckon
- * Version: 0.0.1
+ * Version: 0.1.0
  * Author: mj1618 (Matt James)
  * License: MIT
  */

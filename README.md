@@ -14,7 +14,7 @@ Reckon is influenced by and takes cues from the following projects and programmi
 ## Example
 
 ```js
-import Reckon from 'reckon';
+import Reckon from 'reckon-js';
 
 let reckon = new Reckon({
     fruits:['apple','pear','banana'],
@@ -155,7 +155,7 @@ If you add a listener to a selector, by default it listens ONLY to events fired 
 However, what if you want to listen to events up the state tree, or below on the state tree?
 
 ```js
-import {filterTypes} from 'reckon';
+import {filterTypes} from 'reckon-js';
 
 let fruitSelect = reckon.select('fruit[0]');
 let fruitsSelect = reckon.select('fruit');
