@@ -3,13 +3,21 @@
 
 **Reckon** is an event-based, immutable state container for javascript apps. Reckon manages state as [Facebook Immutable](https://facebook.github.io/immutable-js/) objects. Reckon provides cursors, views and scoped events so that a single Reckon instance can be used for all state in an application.
 
-Reckon is influenced by and takes cues from the following projects and programming paradigms and ideas:
-* [Baobab](https://github.com/Yomguithereal/baobab)
-* [Redux](https://github.com/reactjs/redux)
-* [Flux](https://facebook.github.io/flux/)
-* [Immutability](https://en.wikipedia.org/wiki/Immutable_object)
-* [Immutabile JS](https://facebook.github.io/immutable-js/)
-* [Functional Programming](https://en.wikipedia.org/wiki/Functional_programming)
+Table of Contents
+=================
+* [Example](#example)
+* [Installation](#installation)
+* [Guide](#guide)
+- [The Reckon Object](#the-reckon-object)
+- [Cursors](#cursors)
+- [Reckon Object Cursor](#reckon-object-cursor)
+- [Events](#events)
+- [Updates](#updates)
+- [Filters](#filters)
+- [Views](#views)
+* [Credit](#credit)
+* [Contributions](#contributions)
+* [License](#license)
 
 ## Example
 
@@ -47,13 +55,7 @@ To install stable version if you are using npm package manager
 npm install reckon-js --save
 ```
 
-## Documentation
-
-* The Reckon Object
-* Cursors
-* Events
-* Updates
-* Views
+## Guide
 
 ### The Reckon Object
 
@@ -149,7 +151,7 @@ myCursor.onUpdate( (newState,oldState) => {
 
 Anything you return will be ignored though, so you don't end up with an infinite loop.
 
-### Event Filters
+### Filters
 
 If you add a listener to a selector, by default it listens ONLY to events fired on that selector.
 However, what if you want to listen to events up the state tree, or below on the state tree?
@@ -176,6 +178,37 @@ The list of filters are:
 * SUB_EXCLUSIVE - listens to events strictly below the current selector
 * SUPER_EXCLUSIVE - listens to events strictly above the current selector
 * AFFECTED - anything where a change to the state in that selector could affect the current selector. i.e. anything above, below or the same as the current selector
+
+### Views
+
+Views are simple functions that you add to a listener to expose a certain view of the data. You can also listen to updates on the view for when the output of the function changes.
+
+```js
+let reckon = new Reckon({
+    fruit:'apple'
+});
+
+let view = reckon.addView('fruit_view',data=>data.get('fruit'));
+view.onUpdate(data=>{
+    //data (which is returned by the view) will now be 'pear'
+});
+
+reckon.update(()=>{
+    return {
+        fruit:'pear'
+    };
+});
+```
+
+## Credit
+
+Reckon is influenced by and takes cues from the following projects and programming paradigms:
+* [Baobab](https://github.com/Yomguithereal/baobab)
+* [Redux](https://github.com/reactjs/redux)
+* [Flux](https://facebook.github.io/flux/)
+* [Immutability](https://en.wikipedia.org/wiki/Immutable_object)
+* [Immutabile JS](https://facebook.github.io/immutable-js/)
+* [Functional Programming](https://en.wikipedia.org/wiki/Functional_programming)
 
 ## Contributions
 
