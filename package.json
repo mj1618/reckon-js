@@ -2,7 +2,7 @@
   "name": "reckon-js",
   "version": "0.1.2",
   "description": "Event-based, immutable state container for javascript apps with cursors and views",
-  "main": "./dist/reckon.js",
+  "main": "./dist/index.js",
   "dependencies": {
     "immutable": "^3.8.1",
     "lodash": "^4.15.0"
