@@ -22412,6 +22412,7 @@ var Reckon = (function () {
         this._data = _immutable2['default'].fromJS(data);
         this._selects = {};
         this._updating = false;
+        this._doPersist = options.persist ? true : false;
         this._maxHistory = 0;
         if (options.maxHistory) {
             this._maxHistory = options.maxHistory;
@@ -22492,6 +22493,19 @@ var Reckon = (function () {
         } else {
             this._data = _immutable2['default'].fromJS(data);
         }
+        this.persist();
+    };
+
+    Reckon.prototype.persist = function persist() {
+        if (this._doPersist) {
+            localStorage.setItem('reckon-data', this._data.toJS());
+        }
+    };
+
+    Reckon.prototype.loadPersisted = function loadPersisted() {
+        if (localStorage.getItem('reckon-data') !== null) {
+            this._data = _immutable2['default'].fromJS(localStorage.getItem('reckon-data'));
+        }
     };
 
     Reckon.prototype.undo = function undo() {
@@ -22551,6 +22565,16 @@ var Select = (function () {
             _this._reckon._updating = false;
         });
     }
+
+    Select.prototype.init = function init(data) {
+        this.update(function (state) {
+            if (state == null || state.size && state.size == 0) {
+                return data;
+            } else {
+                return state;
+            }
+        });
+    };
 
     Select.prototype.select = function select(selector) {
         return this._reckon.select(this._path.concat(_lodash2['default'].toPath(selector)));

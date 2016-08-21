@@ -88,7 +88,9 @@ class Reckon {
     }
     
     loadPersisted(){
-        this._data = Immutable.fromJS(localStorage.getItem('reckon-data'));
+        if(localStorage.getItem('reckon-data')!==null){
+            this._data = Immutable.fromJS(localStorage.getItem('reckon-data'));
+        }
     }
     
     undo(){

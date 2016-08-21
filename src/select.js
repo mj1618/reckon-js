@@ -22,6 +22,16 @@ export default class Select {
             });
     }
     
+    init(data){
+        this.update(state=>{
+            if(state==null || (state.size && state.size==0)){
+                return data;
+            } else {
+                return state;
+            }
+        });
+    }
+    
     select(selector){
         return this._reckon.select(this._path.concat(_.toPath(selector)));
     }

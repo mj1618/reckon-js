@@ -1,5 +1,6 @@
 /* eslint-env node, mocha */
 import assert from 'assert';
+import _ from 'lodash';
 import Reckon from '../../src/index';
 
 describe('Reckon Select API',function(){
@@ -188,6 +189,14 @@ describe('Reckon Select API',function(){
                 });
             });
             
+        });
+        
+        
+        it('init',function(){
+            let reckon = new Reckon({});
+            let fruits = reckon.select('fruits');
+            fruits.init(['orange','peach']);
+            assert(_.isEqual(fruits.get().toJS(),['orange','peach']));
         });
         
         it('should not fire update on select object same',function(){
