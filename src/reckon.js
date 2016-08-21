@@ -10,6 +10,7 @@ class Reckon {
         this._data = Immutable.fromJS(data);
         this._selects = {};
         this._updating=false;
+        this._doPersist = options.persist ? true : false;
         this._maxHistory = 0;
         if(options.maxHistory){
             this._maxHistory=options.maxHistory;
@@ -77,6 +78,17 @@ class Reckon {
         } else {
             this._data = Immutable.fromJS(data);
         }
+        this.persist();
+    }
+    
+    persist(){
+        if(this._doPersist){
+            localStorage.setItem('reckon-data',this._data.toJS());
+        }
+    }
+    
+    loadPersisted(){
+        this._data = Immutable.fromJS(localStorage.getItem('reckon-data'));
     }
     
     undo(){
