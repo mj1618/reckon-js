@@ -32,15 +32,25 @@ export default class Select {
         });
     }
     
-    select(selector){
+    rootSelect(selector=[]){
+        return this._reckon.select(selector);
+    }
+    
+    select(selector=[]){
         return this._reckon.select(this._path.concat(_.toPath(selector)));
     }
     
     get(path=[]){
         return this._reckon._get(this._path.concat(_.toPath(path)));
     }
+    getLast(path=[]){
+        return this._reckon._getLast(this._path.concat(_.toPath(path)));
+    }
     getJS(path=[]){
         return this._reckon._getJS(this._path.concat(_.toPath(path)));
+    }
+    getLastJS(path=[]){
+        return this._reckon._getLastJS(this._path.concat(_.toPath(path)));
     }
     
     getRoot(){
@@ -53,6 +63,10 @@ export default class Select {
         } else {
             return this._reckon._get(this._path.slice(0,this._path.length-1));
         }
+    }
+    
+    selectParent(){
+        return this._reckon.select(this._path.slice(0,this._path.length-1));
     }
     
     addView(name,fn){
@@ -111,17 +125,9 @@ export default class Select {
     }
     
     onUpdate(fn){
-        return this.on('λupdated',(data) => {
-            if(
-                !isRelativeEqual({
-                    path:data.path,
-                    data:data.oldData
-                },{
-                    path:this._path,
-                    data:this.get()
-                })
-            ){
-                fn(this.get(),data);
+        return this.on('λupdated',() => {
+            if( !_.isEqual(this.get(),this.getLast()) ){
+                fn(this.get(),this.getLast());
             }
         },filterTypes.AFFECTED);
     }

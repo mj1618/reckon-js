@@ -8,10 +8,12 @@ class Reckon {
     
     constructor(data={},options={}){
         this._data = Immutable.fromJS(data);
+        this._lastData = null;
         this._selects = {};
         this._updating=false;
         this._doPersist = options.persist ? true : false;
         this._maxHistory = 0;
+        this._reckon = this;
         if(options.maxHistory){
             this._maxHistory=options.maxHistory;
         }
@@ -22,12 +24,9 @@ class Reckon {
                 return this._emitter[fn](...args);
             };
         });
-        
-        this._rootSelect = this.select();
-        
-        ['addView','init','update','onUpdate','get','on','before','after','once','emit','getRemover','clear','clearAll','off'].forEach(fn=>{
+        ['getLast','getLastJS','addView','init','update','onUpdate','get','on','before','after','once','emit','getRemover','clear','clearAll','off'].forEach(fn=>{
             this[fn] = (...args)=>{
-                return this._rootSelect[fn](...args);
+                return this.select()[fn](...args);
             };
         });
     }
@@ -50,7 +49,7 @@ class Reckon {
     
     _getJS(path=[]){
         let res = this._get(path);
-        if(res instanceof Object){
+        if(res instanceof Object && res.toJS){
             return res.toJS();
         }
         return res;
@@ -58,26 +57,51 @@ class Reckon {
     
     _update(data,path=[],record=true){
         let old = this._get(path);
+        this._lastData = this._get();
         this._set(data,path);
-        this._emit('λupdated',{
-            path:path,
-            oldData:old
-        });
-        
         if(record===true && this._history.length<this._maxHistory){
             this._history.push({
                 path:path,
                 oldData:old
             });
         }
+        
+        this._emit('λupdated',{
+            path:path,
+            oldData:old
+        });
+    }
+    
+    _getLast(path=[]){
+        if(path && path.length>0){
+            return Immutable.fromJS(pathGet(this._lastData,path));
+        } else {
+            return Immutable.fromJS(this._lastData);
+        }
+    }
+    
+    _getLastJS(path=[]){
+        let res = this._getLast(path);
+        if(res instanceof Object && res.toJS){
+            return res.toJS();
+        }
+        return res;
     }
     
     _set(data,path=[]){
+        let newData = data;
         if(data && data.toJS){
-            data = data.toJS();
+            newData = data.toJS();
         }
         if(path && path.length>0){
-            this._data = Immutable.fromJS(this._get().merge(_.set({},path,data)));
+            let dataRef = this._data.toJS();
+            let f = dataRef;
+            let i=0;
+            for(i=0;i<path.length-1;i++){
+                f = f[path[i]];
+            }
+            f[path[i]] = newData;
+            this._data = Immutable.fromJS(dataRef);
         } else {
             this._data = Immutable.fromJS(data);
         }
@@ -86,13 +110,14 @@ class Reckon {
     
     persist(){
         if(this._doPersist){
-            localStorage.setItem('reckon-data',this._data.toJS());
+            localStorage.setItem('reckon-data',JSON.stringify(this._data.toJS()));
         }
     }
     
     loadPersisted(){
-        if(localStorage.getItem('reckon-data')!==null){
-            this._data = Immutable.fromJS(localStorage.getItem('reckon-data'));
+        if(localStorage.getItem('reckon-data')!=null){
+            this._data = Immutable.fromJS(JSON.parse(localStorage.getItem('reckon-data')));
+            console.log(this._data.toString());
         }
     }
     

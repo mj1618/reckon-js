@@ -22416,9 +22416,9 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _select = require('./select');
+var _select2 = require('./select');
 
-var _select2 = _interopRequireDefault(_select);
+var _select3 = _interopRequireDefault(_select2);
 
 var _helpers = require('./helpers');
 
@@ -22440,10 +22440,12 @@ var Reckon = function () {
         _classCallCheck(this, Reckon);
 
         this._data = _immutable2.default.fromJS(data);
+        this._lastData = null;
         this._selects = {};
         this._updating = false;
         this._doPersist = options.persist ? true : false;
         this._maxHistory = 0;
+        this._reckon = this;
         if (options.maxHistory) {
             this._maxHistory = options.maxHistory;
         }
@@ -22456,14 +22458,11 @@ var Reckon = function () {
                 return (_emitter = _this._emitter)[fn].apply(_emitter, arguments);
             };
         });
-
-        this._rootSelect = this.select();
-
-        ['addView', 'init', 'update', 'onUpdate', 'get', 'on', 'before', 'after', 'once', 'emit', 'getRemover', 'clear', 'clearAll', 'off'].forEach(function (fn) {
+        ['getLast', 'getLastJS', 'addView', 'init', 'update', 'onUpdate', 'get', 'on', 'before', 'after', 'once', 'emit', 'getRemover', 'clear', 'clearAll', 'off'].forEach(function (fn) {
             _this[fn] = function () {
-                var _rootSelect;
+                var _select;
 
-                return (_rootSelect = _this._rootSelect)[fn].apply(_rootSelect, arguments);
+                return (_select = _this.select())[fn].apply(_select, arguments);
             };
         });
     }
@@ -22473,7 +22472,7 @@ var Reckon = function () {
         value: function select(selector) {
             var path = _lodash2.default.toPath(selector);
             if (!this._selects[path]) {
-                this._selects[path] = new _select2.default(this, path);
+                this._selects[path] = new _select3.default(this, path);
             }
             return this._selects[path];
         }
@@ -22494,7 +22493,7 @@ var Reckon = function () {
             var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
             var res = this._get(path);
-            if (res instanceof Object) {
+            if (res instanceof Object && res.toJS) {
                 return res.toJS();
             }
             return res;
@@ -22506,29 +22505,60 @@ var Reckon = function () {
             var record = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
             var old = this._get(path);
+            this._lastData = this._get();
             this._set(data, path);
-            this._emit('λupdated', {
-                path: path,
-                oldData: old
-            });
-
             if (record === true && this._history.length < this._maxHistory) {
                 this._history.push({
                     path: path,
                     oldData: old
                 });
             }
+
+            this._emit('λupdated', {
+                path: path,
+                oldData: old
+            });
+        }
+    }, {
+        key: '_getLast',
+        value: function _getLast() {
+            var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+
+            if (path && path.length > 0) {
+                return _immutable2.default.fromJS((0, _helpers.pathGet)(this._lastData, path));
+            } else {
+                return _immutable2.default.fromJS(this._lastData);
+            }
+        }
+    }, {
+        key: '_getLastJS',
+        value: function _getLastJS() {
+            var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+
+            var res = this._getLast(path);
+            if (res instanceof Object && res.toJS) {
+                return res.toJS();
+            }
+            return res;
         }
     }, {
         key: '_set',
         value: function _set(data) {
             var path = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
 
+            var newData = data;
             if (data && data.toJS) {
-                data = data.toJS();
+                newData = data.toJS();
             }
             if (path && path.length > 0) {
-                this._data = _immutable2.default.fromJS(this._get().merge(_lodash2.default.set({}, path, data)));
+                var dataRef = this._data.toJS();
+                var f = dataRef;
+                var i = 0;
+                for (i = 0; i < path.length - 1; i++) {
+                    f = f[path[i]];
+                }
+                f[path[i]] = newData;
+                this._data = _immutable2.default.fromJS(dataRef);
             } else {
                 this._data = _immutable2.default.fromJS(data);
             }
@@ -22538,14 +22568,15 @@ var Reckon = function () {
         key: 'persist',
         value: function persist() {
             if (this._doPersist) {
-                localStorage.setItem('reckon-data', this._data.toJS());
+                localStorage.setItem('reckon-data', JSON.stringify(this._data.toJS()));
             }
         }
     }, {
         key: 'loadPersisted',
         value: function loadPersisted() {
-            if (localStorage.getItem('reckon-data') !== null) {
-                this._data = _immutable2.default.fromJS(localStorage.getItem('reckon-data'));
+            if (localStorage.getItem('reckon-data') != null) {
+                this._data = _immutable2.default.fromJS(JSON.parse(localStorage.getItem('reckon-data')));
+                console.log(this._data.toString());
             }
         }
     }, {
@@ -22624,8 +22655,17 @@ var Select = function () {
             });
         }
     }, {
+        key: 'rootSelect',
+        value: function rootSelect() {
+            var selector = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+
+            return this._reckon.select(selector);
+        }
+    }, {
         key: 'select',
-        value: function select(selector) {
+        value: function select() {
+            var selector = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+
             return this._reckon.select(this._path.concat(_lodash2.default.toPath(selector)));
         }
     }, {
@@ -22636,11 +22676,25 @@ var Select = function () {
             return this._reckon._get(this._path.concat(_lodash2.default.toPath(path)));
         }
     }, {
+        key: 'getLast',
+        value: function getLast() {
+            var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+
+            return this._reckon._getLast(this._path.concat(_lodash2.default.toPath(path)));
+        }
+    }, {
         key: 'getJS',
         value: function getJS() {
             var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
             return this._reckon._getJS(this._path.concat(_lodash2.default.toPath(path)));
+        }
+    }, {
+        key: 'getLastJS',
+        value: function getLastJS() {
+            var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+
+            return this._reckon._getLastJS(this._path.concat(_lodash2.default.toPath(path)));
         }
     }, {
         key: 'getRoot',
@@ -22655,6 +22709,11 @@ var Select = function () {
             } else {
                 return this._reckon._get(this._path.slice(0, this._path.length - 1));
             }
+        }
+    }, {
+        key: 'selectParent',
+        value: function selectParent() {
+            return this._reckon.select(this._path.slice(0, this._path.length - 1));
         }
     }, {
         key: 'addView',
@@ -22744,15 +22803,9 @@ var Select = function () {
         value: function onUpdate(fn) {
             var _this3 = this;
 
-            return this.on('λupdated', function (data) {
-                if (!(0, _helpers.isRelativeEqual)({
-                    path: data.path,
-                    data: data.oldData
-                }, {
-                    path: _this3._path,
-                    data: _this3.get()
-                })) {
-                    fn(_this3.get(), data);
+            return this.on('λupdated', function () {
+                if (!_lodash2.default.isEqual(_this3.get(), _this3.getLast())) {
+                    fn(_this3.get(), _this3.getLast());
                 }
             }, _filter.filterTypes.AFFECTED);
         }
