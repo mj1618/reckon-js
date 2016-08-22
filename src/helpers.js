@@ -64,13 +64,20 @@ export function isPathsEqual(a,b){
 
 export function isRelativeEqual(a,b){
     
-    if(!isSubPath(a.path,b.path)){
-        if(isSubPath(b.path,a.path)){
-            [a,b] = [b,a];
-        } else {
-            return Immutable.is(a.data,b.data);
-        }
+    if(isPathsEqual(a.path,b.path)){
+        return Immutable.is(a.data,b.data);
     }
-    let aData = relativeData(a.data,a.path,b.path);
-    return Immutable.is(aData,b.data);
+    
+    let c,d;
+    
+    if(isSubPath(b.path,a.path)){
+        c = b;
+        d = a;
+    } else {
+        c = a;
+        d = b;
+    }
+    
+    let cData = relativeData(c.data,c.path,d.path);
+    return Immutable.is(cData,d.data);
 }

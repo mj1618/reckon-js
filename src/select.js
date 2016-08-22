@@ -113,7 +113,6 @@ export default class Select {
     onUpdate(fn){
         return this.on('λupdated',(data) => {
             if(
-                isSubPath(data.path,this._path) &&
                 !isRelativeEqual({
                     path:data.path,
                     data:data.oldData
@@ -122,7 +121,7 @@ export default class Select {
                     data:this.get()
                 })
             ){
-                fn(this.get(),relativeData(data.oldData,data.path,this._path));
+                fn(this.get(),data);
             }
         },filterTypes.AFFECTED);
     }

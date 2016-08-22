@@ -224,6 +224,31 @@ describe('Reckon Select API',function(){
         });
         
         
+        it('should fire update on select change sub object',function(done){
+            
+            let reckon = new Reckon({
+                fruits: [
+                    {name:'apple'},
+                    {name:'pear'}
+                ],
+                veges: [
+                    'tomato',
+                    'cucumber'
+                ]
+            });
+            
+            let fruitsSelect = reckon.select('fruits');
+            let fruitSelect = reckon.select('fruits[0]');
+            fruitsSelect.onUpdate(data=>{
+                done();
+            });
+            
+            fruitSelect.update((state)=>{
+                return state.set('name','orange');
+            });
+        });
+        
+        
         it('sub select',function(){
             
             let reckon = new Reckon({
