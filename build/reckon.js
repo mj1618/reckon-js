@@ -2,7 +2,7 @@
  * Reckon
  *
  * Homepage: https://github.com/mj1618/reckon-js
- * Version: 0.1.3
+ * Version: 0.1.8
  * Author: mj1618 (Matt James)
  * License: MIT
  */
@@ -22030,11 +22030,11 @@ function isUndefined(arg) {
 },{}],4:[function(require,module,exports){
 'use strict';
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _events = require('events');
 
@@ -22046,178 +22046,198 @@ var _filter2 = _interopRequireDefault(_filter);
 
 var _helpers = require('./helpers');
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var actions = {
     ON: 'ON',
     BEFORE: 'BEFORE',
     AFTER: 'AFTER'
 };
 
-var Emitter = (function () {
+var Emitter = function () {
     function Emitter(reckon) {
         _classCallCheck(this, Emitter);
 
-        this._emitter = new _events2['default']();
+        this._emitter = new _events2.default();
         this._ons = {};
         this._reckon = reckon;
     }
 
-    Emitter.prototype._handle = function _handle(type, data, emitPath) {
-        var _this = this;
+    _createClass(Emitter, [{
+        key: '_handle',
+        value: function _handle(type, data, emitPath) {
+            var _this = this;
 
-        if (!this._ons[type]) {
-            return false;
-        }
-        var current = this._ons[type].filter(function (on) {
-            return _filter2['default'](on.filter, emitPath, on.listenPath);
-        });
-        var befores = current.filter(function (on) {
-            return on.action === actions.BEFORE;
-        });
-        var ons = current.filter(function (on) {
-            return on.action === actions.ON;
-        });
-        var afters = current.filter(function (on) {
-            return on.action === actions.AFTER;
-        });
-        befores.concat(ons).concat(afters).map(function (on) {
-            var ret = on.fn(data, _this._reckon._get(emitPath), emitPath);
-            if (ret !== undefined) {
-                _this._reckon._set(ret, on.listenPath);
-            }
-            if (on.n > 0) {
-                on.n -= 1;
-            }
-            return on;
-        });
-        this._ons[type] = this._ons[type].filter(function (on) {
-            return on.n !== 0;
-        });
-        return true;
-    };
-
-    Emitter.prototype.on = function on(type, fn, listenPath) {
-        var filter = arguments.length <= 3 || arguments[3] === undefined ? _filter.filterTypes.EXACT : arguments[3];
-
-        var _this2 = this;
-
-        var n = arguments.length <= 4 || arguments[4] === undefined ? -1 : arguments[4];
-        var action = arguments.length <= 5 || arguments[5] === undefined ? actions.ON : arguments[5];
-
-        if (this._has(type, fn, listenPath, filter)) {
-            return this.getRemovers(type, fn, listenPath, filter);
-        } else {
             if (!this._ons[type]) {
+                return false;
+            }
+            var current = this._ons[type].filter(function (on) {
+                return (0, _filter2.default)(on.filter, emitPath, on.listenPath);
+            });
+            var befores = current.filter(function (on) {
+                return on.action === actions.BEFORE;
+            });
+            var ons = current.filter(function (on) {
+                return on.action === actions.ON;
+            });
+            var afters = current.filter(function (on) {
+                return on.action === actions.AFTER;
+            });
+            befores.concat(ons).concat(afters).map(function (on) {
+                var ret = on.fn(data, _this._reckon._get(emitPath), emitPath);
+                if (ret !== undefined) {
+                    _this._reckon._set(ret, on.listenPath);
+                }
+                if (on.n > 0) {
+                    on.n -= 1;
+                }
+                return on;
+            });
+            this._ons[type] = this._ons[type].filter(function (on) {
+                return on.n !== 0;
+            });
+            return true;
+        }
+    }, {
+        key: 'on',
+        value: function on(type, fn, listenPath) {
+            var filter = arguments.length <= 3 || arguments[3] === undefined ? _filter.filterTypes.EXACT : arguments[3];
+
+            var _this2 = this;
+
+            var n = arguments.length <= 4 || arguments[4] === undefined ? -1 : arguments[4];
+            var action = arguments.length <= 5 || arguments[5] === undefined ? actions.ON : arguments[5];
+
+            if (this._has(type, fn, listenPath, filter)) {
+                return this.getRemovers(type, fn, listenPath, filter);
+            } else {
+                if (!this._ons[type]) {
+                    this._ons[type] = [];
+                    this._emitter.on(type, function (data, emitPath) {
+                        return _this2._handle(type, data, emitPath);
+                    });
+                }
+
+                this._ons[type].push({
+                    type: type,
+                    fn: fn,
+                    filter: filter,
+                    n: n,
+                    action: action,
+                    listenPath: listenPath
+                });
+                return this.getRemovers(type, fn, listenPath, filter);
+            }
+        }
+    }, {
+        key: 'getRemovers',
+        value: function getRemovers(type, fn, listenPath) {
+            var _this3 = this;
+
+            var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+
+            return function () {
+                _this3._ons[type] = _this3._ons[type].filter(function (on) {
+                    return on.fn !== fn || filter !== null && on.filter !== filter || listenPath !== null && on.listenPath !== listenPath;
+                });
+            };
+        }
+    }, {
+        key: 'once',
+        value: function once(type, fn, listenPath) {
+            var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+
+            return this.on(type, fn, listenPath, filter, 1);
+        }
+    }, {
+        key: 'clear',
+        value: function clear(type) {
+            var path = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+            if (path === null) {
                 this._ons[type] = [];
-                this._emitter.on(type, function (data, emitPath) {
-                    return _this2._handle(type, data, emitPath);
+            } else {
+                this._ons[type] = this._ons[type].filter(function (on) {
+                    return !(0, _helpers.isPathsEqual)(on.listenPath, path);
                 });
             }
-
-            this._ons[type].push({
-                type: type,
-                fn: fn,
-                filter: filter,
-                n: n,
-                action: action,
-                listenPath: listenPath
-            });
-            return this.getRemovers(type, fn, listenPath, filter);
         }
-    };
+    }, {
+        key: 'clearAll',
+        value: function clearAll() {
+            var _this4 = this;
 
-    Emitter.prototype.getRemovers = function getRemovers(type, fn, listenPath) {
-        var _this3 = this;
+            var path = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
-        var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
-
-        return function () {
-            _this3._ons[type] = _this3._ons[type].filter(function (on) {
-                return on.fn !== fn || filter !== null && on.filter !== filter || listenPath !== null && on.listenPath !== listenPath;
-            });
-        };
-    };
-
-    Emitter.prototype.once = function once(type, fn, listenPath) {
-        var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
-
-        return this.on(type, fn, listenPath, filter, 1);
-    };
-
-    Emitter.prototype.clear = function clear(type) {
-        var path = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-
-        if (path === null) {
-            this._ons[type] = [];
-        } else {
-            this._ons[type] = this._ons[type].filter(function (on) {
-                return !_helpers.isPathsEqual(on.listenPath, path);
+            Object.keys(this._ons).forEach(function (type) {
+                _this4.clear(type, path);
             });
         }
-    };
-
-    Emitter.prototype.clearAll = function clearAll() {
-        var _this4 = this;
-
-        var path = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-
-        Object.keys(this._ons).forEach(function (type) {
-            _this4.clear(type, path);
-        });
-    };
-
-    Emitter.prototype.getAllEventTypes = function getAllEventTypes() {
-        return Object.keys(this._ons);
-    };
-
-    Emitter.prototype._has = function _has(type, fn, listenPath) {
-        var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
-
-        return this._ons[type] && this._ons[type].some(function (a) {
-            return a.fn === fn && (filter === null || a.filter === filter) && (listenPath === null || a.listenPath === listenPath);
-        });
-    };
-
-    Emitter.prototype.off = function off(type, fn, listenPath) {
-        var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
-
-        var remover = this.getRemovers(type, fn, listenPath, filter);
-        if (remover) {
-            remover();
-            return true;
-        } else {
-            return false;
+    }, {
+        key: 'getAllEventTypes',
+        value: function getAllEventTypes() {
+            return Object.keys(this._ons);
         }
-    };
+    }, {
+        key: '_has',
+        value: function _has(type, fn, listenPath) {
+            var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
 
-    Emitter.prototype.before = function before(type, fn, listenPath) {
-        var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
-        var n = arguments.length <= 4 || arguments[4] === undefined ? -1 : arguments[4];
+            return this._ons[type] && this._ons[type].some(function (a) {
+                return a.fn === fn && (filter === null || a.filter === filter) && (listenPath === null || a.listenPath === listenPath);
+            });
+        }
+    }, {
+        key: 'off',
+        value: function off(type, fn, listenPath) {
+            var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
 
-        return this.on(type, fn, listenPath, filter, n, actions.BEFORE);
-    };
+            var remover = this.getRemovers(type, fn, listenPath, filter);
+            if (remover) {
+                remover();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }, {
+        key: 'before',
+        value: function before(type, fn, listenPath) {
+            var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+            var n = arguments.length <= 4 || arguments[4] === undefined ? -1 : arguments[4];
 
-    Emitter.prototype.after = function after(type, fn, listenPath) {
-        var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
-        var n = arguments.length <= 4 || arguments[4] === undefined ? -1 : arguments[4];
+            return this.on(type, fn, listenPath, filter, n, actions.BEFORE);
+        }
+    }, {
+        key: 'after',
+        value: function after(type, fn, listenPath) {
+            var filter = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+            var n = arguments.length <= 4 || arguments[4] === undefined ? -1 : arguments[4];
 
-        return this.on(type, fn, listenPath, filter, n, actions.AFTER);
-    };
-
-    Emitter.prototype.emit = function emit(type, data, emitPath) {
-        this._emitter.emit(type, data, emitPath);
-    };
+            return this.on(type, fn, listenPath, filter, n, actions.AFTER);
+        }
+    }, {
+        key: 'emit',
+        value: function emit(type, data, emitPath) {
+            this._emitter.emit(type, data, emitPath);
+        }
+    }]);
 
     return Emitter;
-})();
+}();
 
-exports['default'] = Emitter;
-module.exports = exports['default'];
+exports.default = Emitter;
 
 },{"./filter":5,"./helpers":6,"events":1}],5:[function(require,module,exports){
 'use strict';
 
-exports.__esModule = true;
-exports['default'] = filterPath;
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.filterTypes = undefined;
+exports.default = filterPath;
 
 var _helpers = require('./helpers');
 
@@ -22226,28 +22246,27 @@ var filterTypes = ['SUB', 'SUPER', 'ANY', 'ROOT', 'CURRENT', 'SUB_EXCLUSIVE', 'S
 }, {});
 
 exports.filterTypes = filterTypes;
-
 function filterPath(f) {
     var a = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
     var b = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
 
     switch (f) {
         case 'SUPER':
-            return _helpers.isSuper(a, b);
+            return (0, _helpers.isSuper)(a, b);
         case 'SUB':
-            return _helpers.isSub(a, b);
+            return (0, _helpers.isSub)(a, b);
         case 'ANY':
             return true;
         case 'AFFECTED':
-            return _helpers.isSuper(a, b) || _helpers.isSub(a, b);
+            return (0, _helpers.isSuper)(a, b) || (0, _helpers.isSub)(a, b);
         case 'ROOT':
-            return _helpers.isRoot(a, b);
+            return (0, _helpers.isRoot)(a, b);
         case 'CURRENT':
-            return _helpers.isPathsEqual(a, b);
+            return (0, _helpers.isPathsEqual)(a, b);
         case 'SUPER_EXCLUSIVE':
-            return !_helpers.isPathsEqual(a, b) && _helpers.isSuper(a, b);
+            return !(0, _helpers.isPathsEqual)(a, b) && (0, _helpers.isSuper)(a, b);
         case 'SUB_EXCLUSIVE':
-            return !_helpers.isPathsEqual(a, b) && _helpers.isSub(a, b);
+            return !(0, _helpers.isPathsEqual)(a, b) && (0, _helpers.isSub)(a, b);
         default:
             return false;
     }
@@ -22256,7 +22275,9 @@ function filterPath(f) {
 },{"./helpers":6}],6:[function(require,module,exports){
 'use strict';
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 exports.isSubPath = isSubPath;
 exports.pathDiff = pathDiff;
 exports.pathGet = pathGet;
@@ -22267,8 +22288,6 @@ exports.isRoot = isRoot;
 exports.isPathsEqual = isPathsEqual;
 exports.isRelativeEqual = isRelativeEqual;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -22277,11 +22296,13 @@ var _immutable = require('immutable');
 
 var _immutable2 = _interopRequireDefault(_immutable);
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function isSubPath(path, subPath) {
     if (!path || path.length == 0) {
         return true;
     } else {
-        return _lodash2['default'].isEqual(subPath.slice(0, path.length), path);
+        return _lodash2.default.isEqual(subPath.slice(0, path.length), path);
     }
 }
 
@@ -22320,11 +22341,10 @@ function relativeData(data, from, to) {
 }
 
 function isSuper(a, b) {
-    return a === null || b !== null && _lodash2['default'].isEqual(a, b.slice(0, a.length));
+    return a === null || b !== null && _lodash2.default.isEqual(a, b.slice(0, a.length));
 }
-
 function isSub(a, b) {
-    return b === null || a !== null && _lodash2['default'].isEqual(b, a.slice(0, b.length));
+    return b === null || a !== null && _lodash2.default.isEqual(b, a.slice(0, b.length));
 }
 
 function isRoot(a) {
@@ -22335,52 +22355,58 @@ function isPathsEqual(a, b) {
     if (isRoot(a)) {
         return isRoot(b);
     } else {
-        return _lodash2['default'].isEqual(a, b);
+        return _lodash2.default.isEqual(a, b);
     }
 }
 
 function isRelativeEqual(a, b) {
 
-    if (!isSubPath(a.path, b.path)) {
-        if (isSubPath(b.path, a.path)) {
-            var _ref = [b, a];
-            a = _ref[0];
-            b = _ref[1];
-        } else {
-            return _immutable2['default'].is(a.data, b.data);
-        }
+    if (isPathsEqual(a.path, b.path)) {
+        return _immutable2.default.is(a.data, b.data);
     }
-    var aData = relativeData(a.data, a.path, b.path);
-    return _immutable2['default'].is(aData, b.data);
+
+    var c = void 0,
+        d = void 0;
+
+    if (isSubPath(b.path, a.path)) {
+        c = b;
+        d = a;
+    } else {
+        c = a;
+        d = b;
+    }
+
+    var cData = relativeData(c.data, c.path, d.path);
+    return _immutable2.default.is(cData, d.data);
 }
 
 },{"immutable":2,"lodash":3}],7:[function(require,module,exports){
 'use strict';
 
-exports.__esModule = true;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.filterTypes = undefined;
 
 var _reckon = require('./reckon');
 
 var _reckon2 = _interopRequireDefault(_reckon);
 
-var _helpers = require('./helpers');
-
 var _filter = require('./filter');
 
-exports['default'] = _reckon2['default'];
-exports.scopes = _helpers.scopes;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _reckon2.default;
 exports.filterTypes = _filter.filterTypes;
 
-},{"./filter":5,"./helpers":6,"./reckon":8}],8:[function(require,module,exports){
+},{"./filter":5,"./reckon":8}],8:[function(require,module,exports){
 'use strict';
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _immutable = require('immutable');
 
@@ -22400,7 +22426,11 @@ var _emitter2 = require('./emitter');
 
 var _emitter3 = _interopRequireDefault(_emitter2);
 
-var Reckon = (function () {
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Reckon = function () {
     function Reckon() {
         var _this = this;
 
@@ -22409,7 +22439,7 @@ var Reckon = (function () {
 
         _classCallCheck(this, Reckon);
 
-        this._data = _immutable2['default'].fromJS(data);
+        this._data = _immutable2.default.fromJS(data);
         this._selects = {};
         this._updating = false;
         this._doPersist = options.persist ? true : false;
@@ -22418,7 +22448,7 @@ var Reckon = (function () {
             this._maxHistory = options.maxHistory;
         }
         this._history = [];
-        this._emitter = new _emitter3['default'](this);
+        this._emitter = new _emitter3.default(this);
         ['on', 'before', 'after', 'once', 'emit', 'getRemover', 'clear', 'clearAll', 'off', 'getAllEventTypes'].forEach(function (fn) {
             _this['_' + fn] = function () {
                 var _emitter;
@@ -22429,7 +22459,7 @@ var Reckon = (function () {
 
         this._rootSelect = this.select();
 
-        ['addView', 'update', 'onUpdate', 'get', 'on', 'before', 'after', 'once', 'emit', 'getRemover', 'clear', 'clearAll', 'off'].forEach(function (fn) {
+        ['addView', 'init', 'update', 'onUpdate', 'get', 'on', 'before', 'after', 'once', 'emit', 'getRemover', 'clear', 'clearAll', 'off'].forEach(function (fn) {
             _this[fn] = function () {
                 var _rootSelect;
 
@@ -22438,99 +22468,111 @@ var Reckon = (function () {
         });
     }
 
-    Reckon.prototype.select = function select(selector) {
-        var path = _lodash2['default'].toPath(selector);
-        if (!this._selects[path]) {
-            this._selects[path] = new _select2['default'](this, path);
+    _createClass(Reckon, [{
+        key: 'select',
+        value: function select(selector) {
+            var path = _lodash2.default.toPath(selector);
+            if (!this._selects[path]) {
+                this._selects[path] = new _select2.default(this, path);
+            }
+            return this._selects[path];
         }
-        return this._selects[path];
-    };
+    }, {
+        key: '_get',
+        value: function _get() {
+            var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
-    Reckon.prototype._get = function _get() {
-        var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
-
-        if (path && path.length > 0) {
-            return _helpers.pathGet(this._data, path);
-        } else {
-            return this._data;
+            if (path && path.length > 0) {
+                return _immutable2.default.fromJS((0, _helpers.pathGet)(this._data, path));
+            } else {
+                return _immutable2.default.fromJS(this._data);
+            }
         }
-    };
+    }, {
+        key: '_getJS',
+        value: function _getJS() {
+            var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
-    Reckon.prototype._getJS = function _getJS() {
-        var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
-
-        var res = this._get(path);
-        if (res instanceof Object) {
-            return res.toJS();
+            var res = this._get(path);
+            if (res instanceof Object) {
+                return res.toJS();
+            }
+            return res;
         }
-        return res;
-    };
+    }, {
+        key: '_update',
+        value: function _update(data) {
+            var path = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+            var record = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
-    Reckon.prototype._update = function _update(data) {
-        var path = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
-        var record = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
-
-        var old = this._get(path);
-        this._set(data, path);
-        this._emit('λupdated', {
-            path: path,
-            oldData: old
-        });
-
-        if (record === true && this._history.length < this._maxHistory) {
-            this._history.push({
+            var old = this._get(path);
+            this._set(data, path);
+            this._emit('λupdated', {
                 path: path,
                 oldData: old
             });
-        }
-    };
 
-    Reckon.prototype._set = function _set(data) {
-        var path = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
-
-        if (path && path.length > 0) {
-            this._data = this._get().merge(_lodash2['default'].set({}, path, data));
-        } else {
-            this._data = _immutable2['default'].fromJS(data);
+            if (record === true && this._history.length < this._maxHistory) {
+                this._history.push({
+                    path: path,
+                    oldData: old
+                });
+            }
         }
-        this.persist();
-    };
+    }, {
+        key: '_set',
+        value: function _set(data) {
+            var path = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
 
-    Reckon.prototype.persist = function persist() {
-        if (this._doPersist) {
-            localStorage.setItem('reckon-data', this._data.toJS());
+            if (data && data.toJS) {
+                data = data.toJS();
+            }
+            if (path && path.length > 0) {
+                this._data = _immutable2.default.fromJS(this._get().merge(_lodash2.default.set({}, path, data)));
+            } else {
+                this._data = _immutable2.default.fromJS(data);
+            }
+            this.persist();
         }
-    };
-
-    Reckon.prototype.loadPersisted = function loadPersisted() {
-        if (localStorage.getItem('reckon-data') !== null) {
-            this._data = _immutable2['default'].fromJS(localStorage.getItem('reckon-data'));
+    }, {
+        key: 'persist',
+        value: function persist() {
+            if (this._doPersist) {
+                localStorage.setItem('reckon-data', this._data.toJS());
+            }
         }
-    };
-
-    Reckon.prototype.undo = function undo() {
-        if (this._history.length === 0) {
-            return false;
+    }, {
+        key: 'loadPersisted',
+        value: function loadPersisted() {
+            if (localStorage.getItem('reckon-data') !== null) {
+                this._data = _immutable2.default.fromJS(localStorage.getItem('reckon-data'));
+            }
         }
-        var last = this._history.pop();
-        this._set(last.oldData, last.path);
-        return true;
-    };
+    }, {
+        key: 'undo',
+        value: function undo() {
+            if (this._history.length === 0) {
+                return false;
+            }
+            var last = this._history.pop();
+            this._set(last.oldData, last.path);
+            return true;
+        }
+    }]);
 
     return Reckon;
-})();
+}();
 
-exports['default'] = Reckon;
-module.exports = exports['default'];
+exports.default = Reckon;
 
 },{"./emitter":4,"./helpers":6,"./select":9,"immutable":2,"lodash":3}],9:[function(require,module,exports){
 'use strict';
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _lodash = require('lodash');
 
@@ -22544,7 +22586,11 @@ var _view2 = _interopRequireDefault(_view);
 
 var _filter = require('./filter');
 
-var Select = (function () {
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Select = function () {
     function Select(reckon) {
         var _this = this;
 
@@ -22566,150 +22612,175 @@ var Select = (function () {
         });
     }
 
-    Select.prototype.init = function init(data) {
-        this.update(function (state) {
-            if (state == null || state.size && state.size == 0) {
-                return data;
-            } else {
-                return state;
-            }
-        });
-    };
-
-    Select.prototype.select = function select(selector) {
-        return this._reckon.select(this._path.concat(_lodash2['default'].toPath(selector)));
-    };
-
-    Select.prototype.get = function get() {
-        var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
-
-        return this._reckon._get(this._path.concat(_lodash2['default'].toPath(path)));
-    };
-
-    Select.prototype.getJS = function getJS() {
-        var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
-
-        return this._reckon._getJS(this._path.concat(_lodash2['default'].toPath(path)));
-    };
-
-    Select.prototype.getRoot = function getRoot() {
-        return this._reckon._get();
-    };
-
-    Select.prototype.getParent = function getParent() {
-        if (this._path.length == 0) {
-            return null;
-        } else {
-            return this._reckon._get(this._path.slice(0, this._path.length - 1));
+    _createClass(Select, [{
+        key: 'init',
+        value: function init(data) {
+            this.update(function (state) {
+                if (state == null || state.size && state.size == 0) {
+                    return data;
+                } else {
+                    return state;
+                }
+            });
         }
-    };
+    }, {
+        key: 'select',
+        value: function select(selector) {
+            return this._reckon.select(this._path.concat(_lodash2.default.toPath(selector)));
+        }
+    }, {
+        key: 'get',
+        value: function get() {
+            var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
-    Select.prototype.addView = function addView(name, fn) {
-        this._views[name] = new _view2['default'](name, fn, this);
-        return this._views[name];
-    };
+            return this._reckon._get(this._path.concat(_lodash2.default.toPath(path)));
+        }
+    }, {
+        key: 'getJS',
+        value: function getJS() {
+            var path = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
-    Select.prototype.getViews = function getViews() {
-        return this._views;
-    };
-
-    Select.prototype.getView = function getView(name) {
-        return this._views[name];
-    };
-
-    Select.prototype.emit = function emit(name) {
-        var data = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-
-        this._reckon._emit(name, data, this._path);
-    };
-
-    Select.prototype.on = function on(name, fn) {
-        var filter = arguments.length <= 2 || arguments[2] === undefined ? _filter.filterTypes.CURRENT : arguments[2];
-
-        return this._reckon._on(name, fn, this._path, filter);
-    };
-
-    Select.prototype.before = function before(name, fn) {
-        var filter = arguments.length <= 2 || arguments[2] === undefined ? _filter.filterTypes.CURRENT : arguments[2];
-
-        return this._reckon._before(name, fn, this._path, filter);
-    };
-
-    Select.prototype.after = function after(name, fn) {
-        var filter = arguments.length <= 2 || arguments[2] === undefined ? _filter.filterTypes.CURRENT : arguments[2];
-
-        return this._reckon._after(name, fn, this._path, filter);
-    };
-
-    Select.prototype.off = function off(name, fn) {
-        var filter = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
-
-        return this._reckon._off(name, fn, this._path, filter);
-    };
-
-    Select.prototype.once = function once(name, fn) {
-        var filter = arguments.length <= 2 || arguments[2] === undefined ? _filter.filterTypes.CURRENT : arguments[2];
-
-        return this._reckon._once(name, fn, this._path, filter);
-    };
-
-    Select.prototype.clear = function clear(name) {
-        return this._reckon._clear(name, this._path);
-    };
-
-    Select.prototype.getAllEventTypes = function getAllEventTypes() {
-        return this._reckon._getAllEventTypes();
-    };
-
-    Select.prototype.clearAll = function clearAll() {
-        return this._reckon._clearAll();
-    };
-
-    Select.prototype.update = function update(fn) {
-        var _this2 = this;
-
-        this.once('λupdate', function () {
-            _this2._reckon._update(fn(_this2.get()), _this2._path);
-        });
-        this._reckon._emit('λupdate', null, this._path);
-    };
-
-    Select.prototype.onUpdate = function onUpdate(fn) {
-        var _this3 = this;
-
-        return this.on('λupdated', function (data) {
-            if (_helpers.isSubPath(data.path, _this3._path) && !_helpers.isRelativeEqual({
-                path: data.path,
-                data: data.oldData
-            }, {
-                path: _this3._path,
-                data: _this3.get()
-            })) {
-                fn(_this3.get(), _helpers.relativeData(data.oldData, data.path, _this3._path));
+            return this._reckon._getJS(this._path.concat(_lodash2.default.toPath(path)));
+        }
+    }, {
+        key: 'getRoot',
+        value: function getRoot() {
+            return this._reckon._get();
+        }
+    }, {
+        key: 'getParent',
+        value: function getParent() {
+            if (this._path.length == 0) {
+                return null;
+            } else {
+                return this._reckon._get(this._path.slice(0, this._path.length - 1));
             }
-        }, _filter.filterTypes.AFFECTED);
-    };
+        }
+    }, {
+        key: 'addView',
+        value: function addView(name, fn) {
+            this._views[name] = new _view2.default(name, fn, this);
+            return this._views[name];
+        }
+    }, {
+        key: 'getViews',
+        value: function getViews() {
+            return this._views;
+        }
+    }, {
+        key: 'getView',
+        value: function getView(name) {
+            return this._views[name];
+        }
+    }, {
+        key: 'emit',
+        value: function emit(name) {
+            var data = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+            this._reckon._emit(name, data, this._path);
+        }
+    }, {
+        key: 'on',
+        value: function on(name, fn) {
+            var filter = arguments.length <= 2 || arguments[2] === undefined ? _filter.filterTypes.CURRENT : arguments[2];
+
+            return this._reckon._on(name, fn, this._path, filter);
+        }
+    }, {
+        key: 'before',
+        value: function before(name, fn) {
+            var filter = arguments.length <= 2 || arguments[2] === undefined ? _filter.filterTypes.CURRENT : arguments[2];
+
+            return this._reckon._before(name, fn, this._path, filter);
+        }
+    }, {
+        key: 'after',
+        value: function after(name, fn) {
+            var filter = arguments.length <= 2 || arguments[2] === undefined ? _filter.filterTypes.CURRENT : arguments[2];
+
+            return this._reckon._after(name, fn, this._path, filter);
+        }
+    }, {
+        key: 'off',
+        value: function off(name, fn) {
+            var filter = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+            return this._reckon._off(name, fn, this._path, filter);
+        }
+    }, {
+        key: 'once',
+        value: function once(name, fn) {
+            var filter = arguments.length <= 2 || arguments[2] === undefined ? _filter.filterTypes.CURRENT : arguments[2];
+
+            return this._reckon._once(name, fn, this._path, filter);
+        }
+    }, {
+        key: 'clear',
+        value: function clear(name) {
+            return this._reckon._clear(name, this._path);
+        }
+    }, {
+        key: 'getAllEventTypes',
+        value: function getAllEventTypes() {
+            return this._reckon._getAllEventTypes();
+        }
+    }, {
+        key: 'clearAll',
+        value: function clearAll() {
+            return this._reckon._clearAll();
+        }
+    }, {
+        key: 'update',
+        value: function update(fn) {
+            var _this2 = this;
+
+            this.once('λupdate', function () {
+                _this2._reckon._update(fn(_this2.get()), _this2._path);
+            });
+            this._reckon._emit('λupdate', null, this._path);
+        }
+    }, {
+        key: 'onUpdate',
+        value: function onUpdate(fn) {
+            var _this3 = this;
+
+            return this.on('λupdated', function (data) {
+                if (!(0, _helpers.isRelativeEqual)({
+                    path: data.path,
+                    data: data.oldData
+                }, {
+                    path: _this3._path,
+                    data: _this3.get()
+                })) {
+                    fn(_this3.get(), data);
+                }
+            }, _filter.filterTypes.AFFECTED);
+        }
+    }]);
 
     return Select;
-})();
+}();
 
-exports['default'] = Select;
-module.exports = exports['default'];
+exports.default = Select;
 
 },{"./filter":5,"./helpers":6,"./view":10,"lodash":3}],10:[function(require,module,exports){
 'use strict';
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _immutable = require('immutable');
 
 var _immutable2 = _interopRequireDefault(_immutable);
 
-var View = (function () {
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var View = function () {
     function View(name, fn, selector) {
         var _this = this;
 
@@ -22724,40 +22795,45 @@ var View = (function () {
         this._selectUpdate();
     }
 
-    View.prototype._selectUpdate = function _selectUpdate() {
-        var data = this._fn(this._selector.get());
+    _createClass(View, [{
+        key: '_selectUpdate',
+        value: function _selectUpdate() {
+            var data = this._fn(this._selector.get());
 
-        if (!_immutable2['default'].is(this._data, data)) {
-            this._data = data;
-            this._selector.emit(this._name + 'λupdated');
+            if (!_immutable2.default.is(this._data, data)) {
+                this._data = data;
+                this._selector.emit(this._name + 'λupdated');
+            }
         }
-    };
+    }, {
+        key: 'onUpdate',
+        value: function onUpdate(fn) {
+            var _this2 = this;
 
-    View.prototype.onUpdate = function onUpdate(fn) {
-        var _this2 = this;
-
-        this._selector.on(this._name + 'λupdated', function () {
-            return fn(_this2._data);
-        });
-    };
-
-    View.prototype.get = function get() {
-        return this._data;
-    };
-
-    View.prototype.getJS = function getJS() {
-        if (this._data instanceof Object) {
-            return this._data.toJS();
-        } else {
+            this._selector.on(this._name + 'λupdated', function () {
+                return fn(_this2._data);
+            });
+        }
+    }, {
+        key: 'get',
+        value: function get() {
             return this._data;
         }
-    };
+    }, {
+        key: 'getJS',
+        value: function getJS() {
+            if (this._data instanceof Object) {
+                return this._data.toJS();
+            } else {
+                return this._data;
+            }
+        }
+    }]);
 
     return View;
-})();
+}();
 
-exports['default'] = View;
-module.exports = exports['default'];
+exports.default = View;
 
 },{"immutable":2}]},{},[7])(7)
 });
