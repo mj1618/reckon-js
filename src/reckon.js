@@ -42,9 +42,9 @@ class Reckon {
     
     _get(path=[]){
         if(path && path.length>0){
-            return pathGet(this._data,path);
+            return Immutable.fromJS(pathGet(this._data,path));
         } else {
-            return this._data;
+            return Immutable.fromJS(this._data);
         }
     }
     
@@ -73,8 +73,11 @@ class Reckon {
     }
     
     _set(data,path=[]){
+        if(data && data.toJS){
+            data = data.toJS();
+        }
         if(path && path.length>0){
-            this._data = this._get().merge(_.set({},path,data));
+            this._data = Immutable.fromJS(this._get().merge(_.set({},path,data)));
         } else {
             this._data = Immutable.fromJS(data);
         }
