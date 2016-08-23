@@ -19,30 +19,30 @@ export default class TodoFooter extends React.Component {
         
         return (
             <footer className="footer">
-				<span className="todo-count"><strong>{nActive}</strong> item{nActive!==1?'s':''} left</span>
-				<ul className="filters">
-					<li>
-						<a 
+                <span className="todo-count"><strong>{nActive}</strong> item{nActive!==1?'s':''} left</span>
+                <ul className="filters">
+                    <li>
+                        <a 
                             className={root.get('page')==='all'?'selected':''} 
                             href="#/">
                             All
                         </a>
-					</li>
-					<li>
-						<a 
+                    </li>
+                    <li>
+                        <a 
                             className={root.get('page')==='active'?'selected':''} 
                             href="#/active">
                             Active
                         </a>
-					</li>
-					<li>
-						<a 
+                    </li>
+                    <li>
+                        <a 
                             className={root.get('page')==='completed'?'selected':''} 
                             href="#/completed">
                             Completed
                         </a>
-					</li>
-				</ul>
+                    </li>
+                </ul>
                 {
                     
                     nComplete>0 && 
@@ -52,7 +52,7 @@ export default class TodoFooter extends React.Component {
                             Clear completed
                         </button>
                 }
-			</footer>
+            </footer>
         );
     }
 }

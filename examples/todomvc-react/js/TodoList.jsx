@@ -35,15 +35,15 @@ export default class TodoList extends React.Component {
         
         return (
             <section className="main">
-				<input 
+                <input 
                     onChange={()=>{}}
                     onClick={()=>this.toggleAll()} 
                     className="toggle-all" 
                     type="checkbox" 
                     checked={someComplete?'checked':''} 
                     />
-				<label htmlFor="toggle-all">Mark all as complete</label>
-				<ul className="todo-list">
+                <label htmlFor="toggle-all">Mark all as complete</label>
+                <ul className="todo-list">
                     {
                         items.map((it,i) => 
                                <TodoItem 
@@ -53,8 +53,8 @@ export default class TodoList extends React.Component {
                                    item={it} 
                                    /> )
                     }
-				</ul>
-			</section>
+                </ul>
+            </section>
         );
     }
 }
