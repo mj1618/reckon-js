@@ -117,7 +117,6 @@ class Reckon {
     loadPersisted(){
         if(localStorage.getItem('reckon-data')!=null){
             this._data = Immutable.fromJS(JSON.parse(localStorage.getItem('reckon-data')));
-            console.log(this._data.toString());
         }
     }
     

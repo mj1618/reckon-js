@@ -2,7 +2,7 @@
  * Reckon
  *
  * Homepage: https://github.com/mj1618/reckon-js
- * Version: 0.1.8
+ * Version: 0.1.10
  * Author: mj1618 (Matt James)
  * License: MIT
  */
@@ -22576,7 +22576,6 @@ var Reckon = function () {
         value: function loadPersisted() {
             if (localStorage.getItem('reckon-data') != null) {
                 this._data = _immutable2.default.fromJS(JSON.parse(localStorage.getItem('reckon-data')));
-                console.log(this._data.toString());
             }
         }
     }, {
