@@ -46,12 +46,12 @@ export default class TodoList extends React.Component {
                 <ul className="todo-list">
                     {
                         items.map((it,i) => 
-                               <TodoItem 
-                                   key={i} 
-                                   itemIndex={i} 
-                                   cursor={cursor.select(['items',i])} 
-                                   item={it} 
-                                   /> )
+                           <TodoItem 
+                               key={i} 
+                               itemIndex={i} 
+                               cursor={cursor.select(['items',i])} 
+                               item={it} 
+                               /> )
                     }
                 </ul>
             </section>

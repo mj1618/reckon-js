@@ -11,10 +11,12 @@ let reckon = new Reckon({
     }
 },{
     persist:true,
-    maxHistory:100
+    maxHistory:1000
 });
 
 reckon.loadPersisted();
+
+global.reckon = reckon;
 
 var routes = {
     '/': ()=>{

@@ -32,6 +32,10 @@ export default class Select {
         });
     }
     
+    getReckon(){
+        return this._reckon;
+    }
+    
     rootSelect(selector=[]){
         return this._reckon.select(selector);
     }

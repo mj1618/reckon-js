@@ -4,27 +4,19 @@ import ReactDOM from 'react-dom';
 export default class TodoItem extends React.Component {
     
     toggleStatus(){
-        this.props.cursor.update(state=>{
-            return state.set('active',!state.get('active'));
-        });
+        this.props.cursor.update(state=>state.set('active',!state.get('active')));
     }
     
     editOn(){
         let cursor = this.props.cursor;
-        cursor.update(state=>{
-            return state.set('editing',true);
-        });
+        cursor.update(state=>state.set('editing',true));
     }
     editOff(){
         let cursor = this.props.cursor;
-        cursor.update(state=>{
-            return state.set('editing',false);
-        });
+        cursor.update(state=>state.set('editing',false));
     }
     update(){
-        this.props.cursor.update(state=>{
-            return state.set('name',this.refs._input.value);
-        });
+        this.props.cursor.update(state=>state.set('name',this.refs._input.value));
     }
     componentDidUpdate() {
         ReactDOM.findDOMNode(this.refs._input).focus();

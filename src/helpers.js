@@ -9,6 +9,25 @@ export function isSubPath(path,subPath){
     }
 }
 
+export function pathSet(data,newData,path=[]){
+    let dataSet = newData;
+    if(newData && newData.toJS){
+        dataSet = newData.toJS();
+    }
+    if(path && path.length>0){
+        let dataRef = data.toJS();
+        let f = dataRef;
+        let i=0;
+        for(i=0;i<path.length-1;i++){
+            f = f[path[i]];
+        }
+        f[path[i]] = dataSet;
+        return Immutable.fromJS(dataRef);
+    } else {
+        return Immutable.fromJS(newData);
+    }
+}
+
 export function pathDiff(from,to){
     if(!isSubPath(from,to)){
         throw new Error('pathDiff(from,to) must be given an initial path and a sub path: '+to+' is not a sub path of '+from);

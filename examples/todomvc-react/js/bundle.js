@@ -5,7 +5,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
 
 var _events = require('events');
 
@@ -17,9 +25,15 @@ var _filter2 = _interopRequireDefault(_filter);
 
 var _helpers = require('./helpers');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
 
 var actions = {
     ON: 'ON',
@@ -200,6 +214,7 @@ var Emitter = function () {
 }();
 
 exports.default = Emitter;
+
 },{"./filter":2,"./helpers":3,"events":15}],2:[function(require,module,exports){
 'use strict';
 
@@ -241,6 +256,7 @@ function filterPath(f) {
             return false;
     }
 }
+
 },{"./helpers":3}],3:[function(require,module,exports){
 'use strict';
 
@@ -248,6 +264,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.isSubPath = isSubPath;
+exports.pathSet = pathSet;
 exports.pathDiff = pathDiff;
 exports.pathGet = pathGet;
 exports.relativeData = relativeData;
@@ -265,13 +282,36 @@ var _immutable = require('immutable');
 
 var _immutable2 = _interopRequireDefault(_immutable);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
 function isSubPath(path, subPath) {
     if (!path || path.length == 0) {
         return true;
     } else {
         return _lodash2.default.isEqual(subPath.slice(0, path.length), path);
+    }
+}
+
+function pathSet(data, newData) {
+    var path = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
+
+    var dataSet = newData;
+    if (newData && newData.toJS) {
+        dataSet = newData.toJS();
+    }
+    if (path && path.length > 0) {
+        var dataRef = data.toJS();
+        var f = dataRef;
+        var i = 0;
+        for (i = 0; i < path.length - 1; i++) {
+            f = f[path[i]];
+        }
+        f[path[i]] = dataSet;
+        return _immutable2.default.fromJS(dataRef);
+    } else {
+        return _immutable2.default.fromJS(newData);
     }
 }
 
@@ -348,6 +388,7 @@ function isRelativeEqual(a, b) {
     var cData = relativeData(c.data, c.path, d.path);
     return _immutable2.default.is(cData, d.data);
 }
+
 },{"immutable":187,"lodash":188}],4:[function(require,module,exports){
 'use strict';
 
@@ -362,10 +403,13 @@ var _reckon2 = _interopRequireDefault(_reckon);
 
 var _filter = require('./filter');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
 exports.default = _reckon2.default;
 exports.filterTypes = _filter.filterTypes;
+
 },{"./filter":2,"./reckon":5}],5:[function(require,module,exports){
 'use strict';
 
@@ -373,7 +417,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
 
 var _immutable = require('immutable');
 
@@ -393,9 +445,15 @@ var _emitter2 = require('./emitter');
 
 var _emitter3 = _interopRequireDefault(_emitter2);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
 
 var Reckon = function () {
     function Reckon() {
@@ -416,7 +474,8 @@ var Reckon = function () {
         if (options.maxHistory) {
             this._maxHistory = options.maxHistory;
         }
-        this._history = [];
+        this._undos = [];
+        this._redos = [];
         this._emitter = new _emitter3.default(this);
         ['on', 'before', 'after', 'once', 'emit', 'getRemover', 'clear', 'clearAll', 'off', 'getAllEventTypes'].forEach(function (fn) {
             _this['_' + fn] = function () {
@@ -425,7 +484,7 @@ var Reckon = function () {
                 return (_emitter = _this._emitter)[fn].apply(_emitter, arguments);
             };
         });
-        ['getLast', 'getLastJS', 'addView', 'init', 'update', 'onUpdate', 'get', 'on', 'before', 'after', 'once', 'emit', 'getRemover', 'clear', 'clearAll', 'off'].forEach(function (fn) {
+        ['getReckon', 'getLast', 'getLastJS', 'addView', 'init', 'update', 'onUpdate', 'get', 'on', 'before', 'after', 'once', 'emit', 'getRemover', 'clear', 'clearAll', 'off'].forEach(function (fn) {
             _this[fn] = function () {
                 var _select;
 
@@ -474,11 +533,12 @@ var Reckon = function () {
             var old = this._get(path);
             this._lastData = this._get();
             this._set(data, path);
-            if (record === true && this._history.length < this._maxHistory) {
-                this._history.push({
+            if (record === true && this._undos.length < this._maxHistory) {
+                this._undos.push({
                     path: path,
-                    oldData: old
+                    data: old
                 });
+                this._redos = [];
             }
 
             this._emit('λupdated', {
@@ -513,22 +573,7 @@ var Reckon = function () {
         value: function _set(data) {
             var path = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
 
-            var newData = data;
-            if (data && data.toJS) {
-                newData = data.toJS();
-            }
-            if (path && path.length > 0) {
-                var dataRef = this._data.toJS();
-                var f = dataRef;
-                var i = 0;
-                for (i = 0; i < path.length - 1; i++) {
-                    f = f[path[i]];
-                }
-                f[path[i]] = newData;
-                this._data = _immutable2.default.fromJS(dataRef);
-            } else {
-                this._data = _immutable2.default.fromJS(data);
-            }
+            this._data = (0, _helpers.pathSet)(this._data, data, path);
             this.persist();
         }
     }, {
@@ -546,13 +591,62 @@ var Reckon = function () {
             }
         }
     }, {
+        key: 'nUndos',
+        value: function nUndos() {
+            return this._undos.length;
+        }
+    }, {
+        key: 'nRedos',
+        value: function nRedos() {
+            return this._redos.length;
+        }
+    }, {
         key: 'undo',
         value: function undo() {
-            if (this._history.length === 0) {
+            if (this._undos.length === 0) {
                 return false;
             }
-            var last = this._history.pop();
-            this._set(last.oldData, last.path);
+            var before = this._get();
+            var last = this._undos.pop();
+            this._redos.push({
+                data: this._get(last.path),
+                path: last.path
+            });
+
+            this._data = (0, _helpers.pathSet)(before, last.data, last.path);
+
+            if (this._undos.length === 0) {
+                this._lastData = null;
+            } else {
+                var previous = this._undos[this._undos.length - 1];
+                this._lastData = (0, _helpers.pathSet)(this._data, previous.data, previous.path);
+            }
+
+            this._emit('λupdated', {
+                path: [],
+                data: before
+            });
+            return true;
+        }
+    }, {
+        key: 'redo',
+        value: function redo() {
+            if (this._redos.length === 0) {
+                return false;
+            }
+            var before = this._get();
+            this._lastData = before;
+            var next = this._redos.pop();
+            this._undos.push({
+                data: this._get(next.path),
+                path: next.path
+            });
+            this._data = (0, _helpers.pathSet)(before, next.data, next.path);
+
+            this._emit('λupdated', {
+                path: [],
+                data: before
+            });
             return true;
         }
     }]);
@@ -561,6 +655,7 @@ var Reckon = function () {
 }();
 
 exports.default = Reckon;
+
 },{"./emitter":1,"./helpers":3,"./select":6,"immutable":187,"lodash":188}],6:[function(require,module,exports){
 'use strict';
 
@@ -568,7 +663,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
 
 var _lodash = require('lodash');
 
@@ -582,9 +685,15 @@ var _view2 = _interopRequireDefault(_view);
 
 var _filter = require('./filter');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
 
 var Select = function () {
     function Select(reckon) {
@@ -618,6 +727,11 @@ var Select = function () {
                     return state;
                 }
             });
+        }
+    }, {
+        key: 'getReckon',
+        value: function getReckon() {
+            return this._reckon;
         }
     }, {
         key: 'rootSelect',
@@ -780,6 +894,7 @@ var Select = function () {
 }();
 
 exports.default = Select;
+
 },{"./filter":2,"./helpers":3,"./view":7,"lodash":188}],7:[function(require,module,exports){
 'use strict';
 
@@ -787,15 +902,29 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
 
 var _immutable = require('immutable');
 
 var _immutable2 = _interopRequireDefault(_immutable);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
 
 var View = function () {
     function View(name, fn, selector) {
@@ -851,6 +980,7 @@ var View = function () {
 }();
 
 exports.default = View;
+
 },{"immutable":187}],8:[function(require,module,exports){
 'use strict';
 
@@ -891,6 +1021,18 @@ var TodoFooter = function (_React$Component) {
                     return it.active;
                 });
             });
+        }
+    }, {
+        key: 'undo',
+        value: function undo() {
+            var cursor = this.props.cursor;
+            cursor.getReckon().undo();
+        }
+    }, {
+        key: 'redo',
+        value: function redo() {
+            var cursor = this.props.cursor;
+            cursor.getReckon().redo();
         }
     }, {
         key: 'render',
@@ -957,6 +1099,26 @@ var TodoFooter = function (_React$Component) {
                             'Completed'
                         )
                     )
+                ),
+                cursor.getReckon().nUndos() > 0 && _react2.default.createElement(
+                    'button',
+                    {
+                        style: { marginLeft: '5px' },
+                        onClick: function onClick() {
+                            return _this2.undo();
+                        },
+                        className: 'clear-completed' },
+                    'Undo'
+                ),
+                cursor.getReckon().nRedos() > 0 && _react2.default.createElement(
+                    'button',
+                    {
+                        style: { marginLeft: '5px' },
+                        onClick: function onClick() {
+                            return _this2.redo();
+                        },
+                        className: 'clear-completed' },
+                    'Redo'
                 ),
                 nComplete > 0 && _react2.default.createElement(
                     'button',
@@ -1370,6 +1532,7 @@ var TodoMain = function (_React$Component) {
 exports.default = TodoMain;
 
 },{"./TodoFooter.jsx":8,"./TodoHeader.jsx":9,"./TodoList.jsx":11,"react":186}],13:[function(require,module,exports){
+(function (global){
 'use strict';
 
 var _reactDom = require('react-dom');
@@ -1401,10 +1564,12 @@ var reckon = new _reckonJs2.default({
     }
 }, {
     persist: true,
-    maxHistory: 100
+    maxHistory: 1000
 });
 
 reckon.loadPersisted();
+
+global.reckon = reckon;
 
 var routes = {
     '/': function _() {
@@ -1429,6 +1594,7 @@ new _director2.default.Router(routes).init('/');
 
 _reactDom2.default.render(_react2.default.createElement(_TodoMain2.default, { cursor: reckon.select('todoApp') }), document.getElementById('todoapp'));
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./TodoMain.jsx":12,"director":14,"react":186,"react-dom":43,"reckon-js":4}],14:[function(require,module,exports){
 
 

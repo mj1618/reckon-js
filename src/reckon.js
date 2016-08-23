@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 import _ from 'lodash';
 import Select from './select';
-import {pathGet} from './helpers';
+import {pathGet,pathSet} from './helpers';
 import Emitter from './emitter';
 
 class Reckon {
@@ -17,14 +17,15 @@ class Reckon {
         if(options.maxHistory){
             this._maxHistory=options.maxHistory;
         }
-        this._history = [];
+        this._undos = [];
+        this._redos = [];
         this._emitter = new Emitter(this);
         ['on','before','after','once','emit','getRemover','clear','clearAll','off','getAllEventTypes'].forEach(fn=>{
             this['_'+fn] = (...args)=>{
                 return this._emitter[fn](...args);
             };
         });
-        ['getLast','getLastJS','addView','init','update','onUpdate','get','on','before','after','once','emit','getRemover','clear','clearAll','off'].forEach(fn=>{
+        ['getReckon','getLast','getLastJS','addView','init','update','onUpdate','get','on','before','after','once','emit','getRemover','clear','clearAll','off'].forEach(fn=>{
             this[fn] = (...args)=>{
                 return this.select()[fn](...args);
             };
@@ -59,11 +60,12 @@ class Reckon {
         let old = this._get(path);
         this._lastData = this._get();
         this._set(data,path);
-        if(record===true && this._history.length<this._maxHistory){
-            this._history.push({
+        if(record===true && this._undos.length<this._maxHistory){
+            this._undos.push({
                 path:path,
-                oldData:old
+                data:old
             });
+            this._redos=[];
         }
         
         this._emit('λupdated',{
@@ -89,22 +91,7 @@ class Reckon {
     }
     
     _set(data,path=[]){
-        let newData = data;
-        if(data && data.toJS){
-            newData = data.toJS();
-        }
-        if(path && path.length>0){
-            let dataRef = this._data.toJS();
-            let f = dataRef;
-            let i=0;
-            for(i=0;i<path.length-1;i++){
-                f = f[path[i]];
-            }
-            f[path[i]] = newData;
-            this._data = Immutable.fromJS(dataRef);
-        } else {
-            this._data = Immutable.fromJS(data);
-        }
+        this._data = pathSet(this._data,data,path);
         this.persist();
     }
     
@@ -120,12 +107,57 @@ class Reckon {
         }
     }
     
+    nUndos(){
+        return this._undos.length;
+    }
+    nRedos(){
+        return this._redos.length;
+    }
+    
     undo(){
-        if(this._history.length===0){
+        if(this._undos.length===0){
             return false;
         }
-        let last = this._history.pop();
-        this._set(last.oldData,last.path);
+        let before = this._get();
+        let last = this._undos.pop();
+        this._redos.push({
+            data: this._get(last.path),
+            path: last.path
+        });
+        
+        this._data = pathSet(before,last.data,last.path);
+        
+        if(this._undos.length===0){
+            this._lastData=null;
+        } else {
+            let previous = this._undos[this._undos.length-1];
+            this._lastData = pathSet(this._data,previous.data,previous.path);
+        }
+        
+        this._emit('λupdated',{
+            path:[],
+            data:before
+        });
+        return true;
+    }
+    
+    redo(){
+        if(this._redos.length===0){
+            return false;
+        }
+        let before = this._get();
+        this._lastData = before;
+        let next = this._redos.pop();
+        this._undos.push({
+            data: this._get(next.path),
+            path: next.path
+        });
+        this._data = pathSet(before,next.data,next.path);
+        
+        this._emit('λupdated',{
+            path:[],
+            data:before
+        });
         return true;
     }
 }

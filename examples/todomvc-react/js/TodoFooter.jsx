@@ -11,6 +11,16 @@ export default class TodoFooter extends React.Component {
         });
     }
     
+    undo(){
+        let cursor = this.props.cursor;
+        cursor.getReckon().undo();
+    }
+    
+    redo(){
+        let cursor = this.props.cursor;
+        cursor.getReckon().redo();
+    }
+    
     render() {
         let cursor = this.props.cursor;
         let root = cursor.rootSelect();
@@ -44,7 +54,25 @@ export default class TodoFooter extends React.Component {
                     </li>
                 </ul>
                 {
-                    
+                    cursor.getReckon().nUndos()>0 && 
+                        <button 
+                            style={{marginLeft:'5px'}}
+                            onClick={()=>this.undo()} 
+                            className="clear-completed">
+                            Undo
+                        </button>
+                }
+                
+                {
+                    cursor.getReckon().nRedos()>0 && 
+                        <button 
+                            style={{marginLeft:'5px'}}
+                            onClick={()=>this.redo()} 
+                            className="clear-completed">
+                            Redo
+                        </button>
+                }
+                {
                     nComplete>0 && 
                         <button 
                             onClick={()=>this.clearCompleted()} 
@@ -52,6 +80,7 @@ export default class TodoFooter extends React.Component {
                             Clear completed
                         </button>
                 }
+                
             </footer>
         );
     }
