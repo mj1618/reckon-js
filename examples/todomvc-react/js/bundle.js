@@ -1100,26 +1100,6 @@ var TodoFooter = function (_React$Component) {
                         )
                     )
                 ),
-                cursor.getReckon().nUndos() > 0 && _react2.default.createElement(
-                    'button',
-                    {
-                        style: { marginLeft: '5px' },
-                        onClick: function onClick() {
-                            return _this2.undo();
-                        },
-                        className: 'clear-completed' },
-                    'Undo'
-                ),
-                cursor.getReckon().nRedos() > 0 && _react2.default.createElement(
-                    'button',
-                    {
-                        style: { marginLeft: '5px' },
-                        onClick: function onClick() {
-                            return _this2.redo();
-                        },
-                        className: 'clear-completed' },
-                    'Redo'
-                ),
                 nComplete > 0 && _react2.default.createElement(
                     'button',
                     {
@@ -1173,14 +1153,16 @@ var TodoHeader = function (_React$Component) {
         value: function onSubmit() {
             var _this2 = this;
 
-            this.props.cursor.select('items').update(function (items) {
-                return items.push({
-                    name: _this2._input.value,
-                    active: true,
-                    editing: false
+            if (this._input.value.length > 0) {
+                this.props.cursor.select('items').update(function (items) {
+                    return items.push({
+                        name: _this2._input.value,
+                        active: true,
+                        editing: false
+                    });
                 });
-            });
-            this._input.value = "";
+                this._input.value = "";
+            }
         }
     }, {
         key: 'render',

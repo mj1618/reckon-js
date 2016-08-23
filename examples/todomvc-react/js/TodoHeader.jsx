@@ -3,14 +3,16 @@ import React from 'react';
 export default class TodoHeader extends React.Component {
     
     onSubmit(){
-        this.props.cursor.select('items').update(items=>{
-            return items.push({
-                name:this._input.value,
-                active:true,
-                editing:false
+        if(this._input.value.length>0){
+            this.props.cursor.select('items').update(items=>{
+                return items.push({
+                    name:this._input.value,
+                    active:true,
+                    editing:false
+                });
             });
-        });
-        this._input.value="";
+            this._input.value="";
+        }
     }
     
     render() {        

@@ -53,25 +53,7 @@ export default class TodoFooter extends React.Component {
                         </a>
                     </li>
                 </ul>
-                {
-                    cursor.getReckon().nUndos()>0 && 
-                        <button 
-                            style={{marginLeft:'5px'}}
-                            onClick={()=>this.undo()} 
-                            className="clear-completed">
-                            Undo
-                        </button>
-                }
                 
-                {
-                    cursor.getReckon().nRedos()>0 && 
-                        <button 
-                            style={{marginLeft:'5px'}}
-                            onClick={()=>this.redo()} 
-                            className="clear-completed">
-                            Redo
-                        </button>
-                }
                 {
                     nComplete>0 && 
                         <button 
