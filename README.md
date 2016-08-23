@@ -5,7 +5,8 @@
 
 Table of Contents
 =================
-* [Example](#example)
+* [TodoMVC Example](#todomvc-example)
+* [Basioc Example](#basic-example)
 * [Installation](#installation)
 * [Guide](#guide)
     - [The Reckon Object](#the-reckon-object)
@@ -19,7 +20,12 @@ Table of Contents
 * [Contributions](#contributions)
 * [License](#license)
 
-## Example
+
+## TodoMVC Example
+The crux of this example is under [examples/todomvc-react/js](https://github.com/mj1618/reckon-js/tree/master/examples/todomvc-react/js) and view the demo application running [here](https://cdn.rawgit.com/mj1618/reckon-js/master/examples/todomvc-react/index.html#/)
+
+
+## Basic Example
 Try it [here](https://tonicdev.com/57b5dd02db5df91500cf6458/57b5dd02db5df91500cf6459)
 ```js
 import Reckon from 'reckon-js';
