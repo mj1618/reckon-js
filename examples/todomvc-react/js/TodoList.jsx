@@ -17,21 +17,20 @@ export default class TodoList extends React.Component {
     render() {
         let cursor = this.props.cursor;
         let root = cursor.rootSelect();
-        let items = 
-            cursor
-                .get()
-                .get('items')
-                .filter(it=>{
-                    switch(root.get('page')){
-                        case 'active':
-                            return it.get('active')===true;
-                        case 'completed':
-                            return it.get('active')===false;
-                        default:
-                            return true;
-                    }
-                });
-        let someComplete = cursor.get().get('items').toJS().some(it=>it.active===false);
+        let items = cursor
+            .get()
+            .get('items')
+            .filter(it=>{
+                switch(root.get('page')){
+                    case 'active':
+                        return it.get('active')===true;
+                    case 'completed':
+                        return it.get('active')===false;
+                    default:
+                        return true;
+                }
+            });
+        let someComplete = cursor.get().get('items').toJS().some(it => it.active===false);
         
         return (
             <section className="main">

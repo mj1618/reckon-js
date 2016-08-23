@@ -4,7 +4,7 @@ export default class TodoHeader extends React.Component {
     
     onSubmit(){
         if(this._input.value.length>0){
-            this.props.cursor.select('items').update(items=>{
+            this.props.cursor.select('items').update(items => {
                 return items.push({
                     name:this._input.value,
                     active:true,

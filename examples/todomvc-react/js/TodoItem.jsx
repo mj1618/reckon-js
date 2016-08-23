@@ -22,9 +22,7 @@ export default class TodoItem extends React.Component {
         ReactDOM.findDOMNode(this.refs._input).focus();
     }
     deleteItem(){
-        this.props.cursor.selectParent().update(items => {
-            return items.filter((it,i) => i !== this.props.itemIndex)
-        });
+        this.props.cursor.selectParent().update(items => items.filter((it,i) => i !== this.props.itemIndex));
     }
     
     render() {

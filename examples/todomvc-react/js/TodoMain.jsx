@@ -17,9 +17,11 @@ export default class TodoMain extends React.Component {
             <section className="todoapp">
                 <TodoHeader cursor={cursor}></TodoHeader>
                 <TodoList cursor={cursor}></TodoList>
-                { cursor.get().get('items').size > 0 ? 
-                    <TodoFooter cursor={cursor}></TodoFooter>
-                    : null }
+                { 
+                    cursor.get().get('items').size > 0 ? 
+                        <TodoFooter cursor={cursor}></TodoFooter>
+                        : null 
+                }
             </section>
         );
     }

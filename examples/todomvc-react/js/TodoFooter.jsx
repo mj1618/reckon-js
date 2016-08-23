@@ -1,14 +1,10 @@
 import React from 'react';
 
-//This footer should hidden by default and shown when there are todos
 export default class TodoFooter extends React.Component {
-    
     
     clearCompleted(){
         let cursor = this.props.cursor;
-        cursor.select('items').update(state=>{
-            return state.filter(it=>it.active);
-        });
+        cursor.select('items').update(state => state.filter(it => it.active));
     }
     
     undo(){
@@ -24,8 +20,8 @@ export default class TodoFooter extends React.Component {
     render() {
         let cursor = this.props.cursor;
         let root = cursor.rootSelect();
-        let nActive = cursor.get('items').filter(it=>it.get('active')).size;
-        let nComplete = cursor.get('items').filter(it=>!it.get('active')).size;
+        let nActive = cursor.get('items').filter(it => it.get('active')).size;
+        let nComplete = cursor.get('items').filter(it => !it.get('active')).size;
         
         return (
             <footer className="footer">
