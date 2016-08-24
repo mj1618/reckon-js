@@ -1171,6 +1171,16 @@ var TodoItem = function (_React$Component) {
             });
         }
     }, {
+        key: 'mobileEditOn',
+        value: function mobileEditOn() {
+            if ('ontouchstart' in window && navigator.maxTouchPoints > 0) {
+                var cursor = this.props.cursor;
+                cursor.update(function (state) {
+                    return state.set('editing', true);
+                });
+            }
+        }
+    }, {
         key: 'editOn',
         value: function editOn() {
             var cursor = this.props.cursor;
@@ -1212,17 +1222,6 @@ var TodoItem = function (_React$Component) {
             });
         }
     }, {
-        key: 'mobilePointer',
-        value: function mobilePointer() {
-            if ('ontouchstart' in window || navigator.maxTouchPoints) {
-                return {
-                    cursor: 'pointer'
-                };
-            } else {
-                return {};
-            }
-        }
-    }, {
         key: 'render',
         value: function render() {
             var _this4 = this;
@@ -1250,7 +1249,9 @@ var TodoItem = function (_React$Component) {
                     _react2.default.createElement(
                         'label',
                         {
-                            style: this.mobilePointer(),
+                            onClick: function onClick() {
+                                return _this4.mobileEditOn();
+                            },
                             onDoubleClick: function onDoubleClick() {
                                 return _this4.editOn();
                             } },
@@ -1333,17 +1334,6 @@ var TodoList = function (_React$Component) {
             });
         }
     }, {
-        key: 'mobilePointer',
-        value: function mobilePointer() {
-            if ('ontouchstart' in window || navigator.maxTouchPoints) {
-                return {
-                    cursor: 'pointer'
-                };
-            } else {
-                return {};
-            }
-        }
-    }, {
         key: 'render',
         value: function render() {
             var _this2 = this;
@@ -1368,7 +1358,6 @@ var TodoList = function (_React$Component) {
                 'section',
                 { className: 'main' },
                 _react2.default.createElement('input', {
-                    style: this.mobilePointer(),
                     onChange: function onChange() {},
                     onClick: function onClick() {
                         return _this2.toggleAll();
