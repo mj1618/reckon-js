@@ -25,6 +25,16 @@ export default class TodoItem extends React.Component {
         this.props.cursor.selectParent().update(items => items.filter((it,i) => i !== this.props.itemIndex));
     }
     
+    mobilePointer(){
+        if('ontouchstart' in window || navigator.maxTouchPoints){
+            return {
+                cursor:'pointer'
+            };
+        } else {
+            return {};
+        }
+    }
+    
     render() {
         let cursor = this.props.cursor;
         let item = this.props.item.toJS();
@@ -42,6 +52,7 @@ export default class TodoItem extends React.Component {
                         onClick={()=>this.toggleStatus()}
                         checked={!item.active?'checked':''} />
                     <label 
+                        style={this.mobilePointer()}
                         onDoubleClick={()=>this.editOn()}>
                         {item.name}
                     </label>

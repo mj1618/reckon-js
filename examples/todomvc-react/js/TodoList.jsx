@@ -14,6 +14,17 @@ export default class TodoList extends React.Component {
         });
     }
     
+    mobilePointer(){
+        if('ontouchstart' in window || navigator.maxTouchPoints){
+            return {
+                cursor:'pointer'
+            };
+        } else {
+            return {};
+        }
+    }
+    
+    
     render() {
         let cursor = this.props.cursor;
         let root = cursor.rootSelect();
@@ -35,6 +46,7 @@ export default class TodoList extends React.Component {
         return (
             <section className="main">
                 <input 
+                    style={this.mobilePointer()}
                     onChange={()=>{}}
                     onClick={()=>this.toggleAll()} 
                     className="toggle-all" 
