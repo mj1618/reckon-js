@@ -16,6 +16,7 @@ Table of Contents
     - [Updates](#updates)
     - [Filters](#filters)
     - [Views](#views)
+    - [Undo and Redo](#undo-and-redo)
 * [Credit](#credit)
 * [Contributions](#contributions)
 * [License](#license)
@@ -25,7 +26,7 @@ Table of Contents
 
 ### [Demo](https://cdn.rawgit.com/mj1618/reckon-js/master/examples/todomvc-react/index.html#/)
 
-The crux of this example is under [examples/todomvc-react/js](https://github.com/mj1618/reckon-js/tree/master/examples/todomvc-react/js) and view the demo application running [here](https://cdn.rawgit.com/mj1618/reckon-js/master/examples/todomvc-react/index.html#/)
+The crux of this ReackonJS+React example is under [examples/todomvc-react/js](https://github.com/mj1618/reckon-js/tree/master/examples/todomvc-react/js) and view the demo application running [here](https://cdn.rawgit.com/mj1618/reckon-js/master/examples/todomvc-react/index.html#/)
 
 Check out [app.js](https://github.com/mj1618/reckon-js/tree/master/examples/todomvc-react/js/app.js) for the starting point of the application, and the react components are in the '.jsx' files. The bundle.js is the compiled version of the code.
 
@@ -210,6 +211,28 @@ reckon.update(()=>{
     };
 });
 ```
+
+### Undo and redo
+
+You can go forward and backward in states by using reckon.undo() and reckon.redo()
+
+This must be enabled when you create a reckon object in order to set the maximum number of states to remember (note that it only remembers the state changes to save on space).
+e.g.
+```
+
+let reckon = new Reckon({
+    state:'state-1'
+},{
+    maxHistory:1000
+});
+
+reckon.update(state=>'state-2');
+reckon.undo();
+// State now contains 'state-1'
+reckon.redo();
+// State now contains 'state-2'
+```
+Note that updates are fired on all changes, including undo/redo.
 
 ## Credit
 
