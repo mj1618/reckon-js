@@ -218,12 +218,11 @@ You can go forward and backward in states by using reckon.undo() and reckon.redo
 
 This must be enabled when you create a reckon object in order to set the maximum number of states to remember (note that it only remembers the state changes to save on space).
 e.g.
-```
-
+```js
 let reckon = new Reckon({
     state:'state-1'
 },{
-    maxHistory:1000
+    maxHistory:1000 //maximum number of undo's to store
 });
 
 reckon.update(state=>'state-2');
