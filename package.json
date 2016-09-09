@@ -45,7 +45,10 @@
     "immutable",
     "state",
     "events",
-    "cursors"
+    "cursors",
+    "model",
+    "flux",
+    "framework"
   ],
   "license": "MIT",
   "bugs": {
